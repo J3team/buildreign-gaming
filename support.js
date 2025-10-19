@@ -165,7 +165,7 @@ function initializeTicketForm() {
     }
 }
 
-function handleTicketSubmit(e) {
+async function handleTicketSubmit(e) {
     e.preventDefault();
 
     const user = getCurrentUser();
@@ -193,8 +193,8 @@ function handleTicketSubmit(e) {
         ]
     };
 
-    // Save ticket
-    saveTicket(formData);
+    // Save ticket (Firebase or localStorage)
+    await saveTicket(formData);
 
     // Show success modal
     document.getElementById('ticketNumber').textContent = formData.id;
@@ -210,21 +210,7 @@ function generateTicketId() {
     return `BR${timestamp.toString().slice(-6)}${random}`;
 }
 
-function saveTicket(ticket) {
-    let tickets = getTickets();
-    tickets.push(ticket);
-    localStorage.setItem('supportTickets', JSON.stringify(tickets));
-}
-
-function getTickets() {
-    const ticketsStr = localStorage.getItem('supportTickets');
-    return ticketsStr ? JSON.parse(ticketsStr) : [];
-}
-
-function getUserTickets(userEmail) {
-    const allTickets = getTickets();
-    return allTickets.filter(ticket => ticket.email === userEmail);
-}
+// Note: saveTicket, getTickets, getUserTickets are now in firebase-db.js
 
 // Portal Page
 function initializePortal() {
@@ -254,8 +240,8 @@ function initializePortal() {
     }
 }
 
-function loadUserTickets(userEmail, statusFilter = 'all') {
-    const tickets = getUserTickets(userEmail);
+async function loadUserTickets(userEmail, statusFilter = 'all') {
+    const tickets = await getUserTickets(userEmail);
 
     // Filter by status
     const filteredTickets = statusFilter === 'all'
@@ -313,9 +299,8 @@ function displayTickets(tickets) {
     `).join('');
 }
 
-function viewTicket(ticketId) {
-    const tickets = getTickets();
-    const ticket = tickets.find(t => t.id === ticketId);
+async function viewTicket(ticketId) {
+    const ticket = await getTicketById(ticketId);
 
     if (!ticket) return;
 
@@ -354,7 +339,7 @@ function displayTicketMessages(ticket) {
     `).join('');
 }
 
-function handleReply(e, ticketId) {
+async function handleReply(e, ticketId) {
     e.preventDefault();
 
     const replyMessage = document.getElementById('replyMessage').value;
@@ -362,21 +347,22 @@ function handleReply(e, ticketId) {
 
     const user = getCurrentUser();
 
-    // Add reply to ticket
-    const tickets = getTickets();
-    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+    // Get ticket
+    const ticket = await getTicketById(ticketId);
 
-    if (ticketIndex !== -1) {
-        tickets[ticketIndex].messages.push({
+    if (ticket) {
+        // Add reply to ticket
+        ticket.messages.push({
             author: user.name,
             content: replyMessage,
             date: new Date().toISOString(),
             isStaff: false
         });
-        tickets[ticketIndex].updatedAt = new Date().toISOString();
-        tickets[ticketIndex].status = 'awaiting-reply';
+        ticket.updatedAt = new Date().toISOString();
+        ticket.status = 'awaiting-reply';
 
-        localStorage.setItem('supportTickets', JSON.stringify(tickets));
+        // Update in database
+        await updateTicket(ticketId, ticket);
 
         // Simulate staff reply after 2 seconds
         setTimeout(() => {
@@ -384,18 +370,17 @@ function handleReply(e, ticketId) {
         }, 2000);
 
         // Refresh display
-        displayTicketMessages(tickets[ticketIndex]);
+        displayTicketMessages(ticket);
         document.getElementById('replyMessage').value = '';
 
         alert('Reply sent! Our support team will respond shortly.');
     }
 }
 
-function addStaffReply(ticketId) {
-    const tickets = getTickets();
-    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+async function addStaffReply(ticketId) {
+    const ticket = await getTicketById(ticketId);
 
-    if (ticketIndex !== -1) {
+    if (ticket) {
         const responses = [
             "Thank you for your message. Our team is reviewing your request and will provide a detailed response soon.",
             "We've received your update. A specialist from our team will assist you within the next few hours.",
@@ -403,16 +388,16 @@ function addStaffReply(ticketId) {
             "Your request has been escalated to our senior support team. We'll update you shortly."
         ];
 
-        tickets[ticketIndex].messages.push({
+        ticket.messages.push({
             author: 'Support Team',
             content: responses[Math.floor(Math.random() * responses.length)],
             date: new Date().toISOString(),
             isStaff: true
         });
-        tickets[ticketIndex].status = 'in-progress';
-        tickets[ticketIndex].updatedAt = new Date().toISOString();
+        ticket.status = 'in-progress';
+        ticket.updatedAt = new Date().toISOString();
 
-        localStorage.setItem('supportTickets', JSON.stringify(tickets));
+        await updateTicket(ticketId, ticket);
     }
 }
 

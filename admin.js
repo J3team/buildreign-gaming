@@ -128,8 +128,8 @@ function loadAdminDashboard() {
 }
 
 // Load admin statistics
-function loadAdminStats() {
-    const tickets = getTickets();
+async function loadAdminStats() {
+    const tickets = await getTickets();
 
     document.getElementById('adminTotalTickets').textContent = tickets.length;
     document.getElementById('adminOpenTickets').textContent =
@@ -166,8 +166,8 @@ function initializeAdminFilters() {
 }
 
 // Load and display admin tickets
-function loadAdminTickets() {
-    let tickets = getTickets();
+async function loadAdminTickets() {
+    let tickets = await getTickets();
 
     // Apply filters
     const statusFilter = document.getElementById('adminStatusFilter').value;
@@ -246,9 +246,8 @@ function displayAdminTickets(tickets) {
 }
 
 // View ticket in admin modal
-function viewAdminTicket(ticketId) {
-    const tickets = getTickets();
-    const ticket = tickets.find(t => t.id === ticketId);
+async function viewAdminTicket(ticketId) {
+    const ticket = await getTicketById(ticketId);
 
     if (!ticket) return;
 
@@ -297,7 +296,7 @@ function displayAdminTicketMessages(ticket) {
 }
 
 // Handle admin reply
-function handleAdminReply(e, ticketId) {
+async function handleAdminReply(e, ticketId) {
     e.preventDefault();
 
     const replyMessage = document.getElementById('adminReplyMessage').value;
@@ -307,12 +306,11 @@ function handleAdminReply(e, ticketId) {
     }
 
     const adminUser = getAdminUser();
-    const tickets = getTickets();
-    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+    const ticket = await getTicketById(ticketId);
 
-    if (ticketIndex !== -1) {
+    if (ticket) {
         // Add staff reply
-        tickets[ticketIndex].messages.push({
+        ticket.messages.push({
             author: `${adminUser.name} (Support Team)`,
             content: replyMessage,
             date: new Date().toISOString(),
@@ -320,13 +318,13 @@ function handleAdminReply(e, ticketId) {
         });
 
         // Update ticket
-        tickets[ticketIndex].updatedAt = new Date().toISOString();
-        tickets[ticketIndex].status = 'in-progress';
+        ticket.updatedAt = new Date().toISOString();
+        ticket.status = 'in-progress';
 
-        localStorage.setItem('supportTickets', JSON.stringify(tickets));
+        await updateTicket(ticketId, ticket);
 
         // Refresh display
-        displayAdminTicketMessages(tickets[ticketIndex]);
+        displayAdminTicketMessages(ticket);
         document.getElementById('adminReplyMessage').value = '';
         document.getElementById('adminModalStatus').value = 'in-progress';
 
@@ -339,25 +337,23 @@ function handleAdminReply(e, ticketId) {
 }
 
 // Update ticket status
-function updateTicketStatus() {
+async function updateTicketStatus() {
     if (!currentEditTicket) return;
 
     const newStatus = document.getElementById('adminModalStatus').value;
-    const tickets = getTickets();
-    const ticketIndex = tickets.findIndex(t => t.id === currentEditTicket.id);
 
-    if (ticketIndex !== -1) {
-        tickets[ticketIndex].status = newStatus;
-        tickets[ticketIndex].updatedAt = new Date().toISOString();
-        localStorage.setItem('supportTickets', JSON.stringify(tickets));
+    // Update ticket status
+    await updateTicket(currentEditTicket.id, {
+        status: newStatus,
+        updatedAt: new Date().toISOString()
+    });
 
-        alert(`✅ Ticket status updated to: ${formatStatus(newStatus)}`);
+    alert(`✅ Ticket status updated to: ${formatStatus(newStatus)}`);
 
-        // Refresh
-        loadAdminStats();
-        loadAdminTickets();
-        currentEditTicket.status = newStatus;
-    }
+    // Refresh
+    loadAdminStats();
+    loadAdminTickets();
+    currentEditTicket.status = newStatus;
 }
 
 // Delete ticket
@@ -372,12 +368,10 @@ function deleteTicket(ticketId) {
 }
 
 // Confirm delete
-function confirmDelete() {
+async function confirmDelete() {
     if (!ticketToDelete) return;
 
-    const tickets = getTickets();
-    const filteredTickets = tickets.filter(t => t.id !== ticketToDelete);
-    localStorage.setItem('supportTickets', JSON.stringify(filteredTickets));
+    await deleteTicket(ticketToDelete);
 
     closeModal('deleteModal');
     loadAdminStats();
