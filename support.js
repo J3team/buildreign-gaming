@@ -196,6 +196,14 @@ async function handleTicketSubmit(e) {
     // Save ticket (Firebase or localStorage)
     await saveTicket(formData);
 
+    // Send Discord notification
+    try {
+        await sendDiscordNotification(formData, 'new');
+    } catch (error) {
+        console.error('Discord notification failed:', error);
+        // Don't block ticket creation if Discord fails
+    }
+
     // Show success modal
     document.getElementById('ticketNumber').textContent = formData.id;
     document.getElementById('successModal').style.display = 'block';
@@ -363,6 +371,13 @@ async function handleReply(e, ticketId) {
 
         // Update in database
         await updateTicket(ticketId, ticket);
+
+        // Send Discord notification for reply
+        try {
+            await sendDiscordNotification(ticket, 'reply');
+        } catch (error) {
+            console.error('Discord notification failed:', error);
+        }
 
         // Simulate staff reply after 2 seconds
         setTimeout(() => {
