@@ -10,6 +10,7 @@
 // 5. Copy the webhook URL and paste it below
 
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1429470806416691211/jkYVVKjFC6bIW7j0FClKsk1Q4WXqx7LnBnTUKh5CX0fFMFQNjJ7hSzffJvN8FkiKApiB'; // Paste your Discord webhook URL here
+const SUPPORT_ROLE_ID = '1429470660828205106'; // Role ID to ping for new tickets
 
 // ============= DISCORD FUNCTIONS =============
 
@@ -23,8 +24,9 @@ async function sendDiscordNotification(ticket, type = 'new') {
     try {
         const embed = createTicketEmbed(ticket, type);
         const payload = {
-            username: 'BuildReign Support',
+            username: 'BuildReign Support Bot',
             avatar_url: 'https://via.placeholder.com/128/00ff88/1a1a2e?text=BR',
+            content: type === 'new' ? `<@&${SUPPORT_ROLE_ID}> **New Support Ticket!**` : null,
             embeds: [embed]
         };
 
@@ -51,17 +53,24 @@ async function sendDiscordNotification(ticket, type = 'new') {
 
 function createTicketEmbed(ticket, type) {
     const colors = {
-        'new': 65280,        // Green (#00ff00)
-        'reply': 255,        // Blue (#0000ff)
-        'update': 16776960,  // Yellow (#ffff00)
-        'closed': 8421504    // Gray (#808080)
+        'new': 0x00ff88,      // BuildReign Green
+        'reply': 0x0088ff,    // BuildReign Blue
+        'update': 0xffa500,   // Orange
+        'closed': 0x808080    // Gray
     };
 
     const priorityEmojis = {
         'low': '🟢',
         'medium': '🟡',
         'high': '🟠',
-        'critical': '🔴'
+        'critical': '🔴⚠️'
+    };
+
+    const priorityColors = {
+        'low': '`LOW`',
+        'medium': '`MEDIUM`',
+        'high': '`HIGH`',
+        'critical': '`🚨 CRITICAL 🚨`'
     };
 
     const departmentEmojis = {
@@ -74,79 +83,123 @@ function createTicketEmbed(ticket, type) {
         'general': '💬'
     };
 
+    const statusEmojis = {
+        'open': '🆕',
+        'in-progress': '⏳',
+        'awaiting-reply': '⏰',
+        'closed': '✅'
+    };
+
     let title = '';
     let description = '';
 
     switch (type) {
         case 'new':
-            title = '🎫 New Support Ticket';
-            description = 'A new support ticket has been submitted.';
+            title = '🎫 NEW SUPPORT TICKET RECEIVED';
+            description = '**A customer needs assistance!**\n━━━━━━━━━━━━━━━━━━━━━━';
             break;
         case 'reply':
-            title = '💬 Ticket Reply';
-            description = 'A customer has replied to their ticket.';
+            title = '💬 CUSTOMER REPLY RECEIVED';
+            description = '**A customer has responded to their ticket.**\n━━━━━━━━━━━━━━━━━━━━━━';
             break;
         case 'update':
-            title = '🔄 Ticket Updated';
-            description = 'A ticket has been updated.';
+            title = '🔄 TICKET STATUS UPDATE';
+            description = '**A ticket has been updated.**\n━━━━━━━━━━━━━━━━━━━━━━';
             break;
         case 'closed':
-            title = '✅ Ticket Closed';
-            description = 'A ticket has been closed.';
+            title = '✅ TICKET RESOLVED';
+            description = '**A support ticket has been closed.**\n━━━━━━━━━━━━━━━━━━━━━━';
             break;
     }
 
     const embed = {
+        author: {
+            name: 'BuildReign Gaming Support',
+            icon_url: 'https://via.placeholder.com/64/00ff88/1a1a2e?text=BR'
+        },
         title: title,
         description: description,
         color: colors[type] || colors['new'],
         fields: [
             {
+                name: '\u200B',
+                value: '**📋 TICKET INFORMATION**',
+                inline: false
+            },
+            {
                 name: '🆔 Ticket ID',
-                value: `\`${ticket.id}\``,
-                inline: true
-            },
-            {
-                name: '📧 Customer',
-                value: `${ticket.fullName}\n${ticket.email}`,
-                inline: true
-            },
-            {
-                name: '📁 Department',
-                value: `${departmentEmojis[ticket.department] || '💬'} ${formatDepartmentName(ticket.department)}`,
-                inline: true
-            },
-            {
-                name: '⚡ Priority',
-                value: `${priorityEmojis[ticket.priority] || '⚪'} ${ticket.priority.toUpperCase()}`,
-                inline: true
-            },
-            {
-                name: '📦 Order Number',
-                value: ticket.orderNumber || 'N/A',
+                value: `\`\`\`${ticket.id}\`\`\``,
                 inline: true
             },
             {
                 name: '🏷️ Status',
-                value: formatStatusName(ticket.status).toUpperCase(),
+                value: `${statusEmojis[ticket.status] || '❓'} **${formatStatusName(ticket.status).toUpperCase()}**`,
                 inline: true
             },
             {
-                name: '📝 Subject',
-                value: ticket.subject,
+                name: '⚡ Priority Level',
+                value: `${priorityEmojis[ticket.priority] || '⚪'} ${priorityColors[ticket.priority]}`,
+                inline: true
+            },
+            {
+                name: '\u200B',
+                value: '**👤 CUSTOMER DETAILS**',
                 inline: false
             },
             {
-                name: '💭 Message',
-                value: truncateMessage(ticket.message, 500),
+                name: '📧 Name',
+                value: `**${ticket.fullName}**`,
+                inline: true
+            },
+            {
+                name: '✉️ Email',
+                value: `\`${ticket.email}\``,
+                inline: true
+            },
+            {
+                name: '📦 Order #',
+                value: ticket.orderNumber ? `\`${ticket.orderNumber}\`` : '`N/A`',
+                inline: true
+            },
+            {
+                name: '\u200B',
+                value: '**📁 TICKET DETAILS**',
+                inline: false
+            },
+            {
+                name: '📂 Department',
+                value: `${departmentEmojis[ticket.department] || '💬'} **${formatDepartmentName(ticket.department)}**`,
+                inline: false
+            },
+            {
+                name: '📝 Subject',
+                value: `**${ticket.subject}**`,
+                inline: false
+            },
+            {
+                name: '💬 Message',
+                value: `>>> ${truncateMessage(ticket.message, 800)}`,
                 inline: false
             }
         ],
+        thumbnail: {
+            url: 'https://via.placeholder.com/256/00ff88/1a1a2e?text=TICKET'
+        },
         timestamp: new Date().toISOString(),
         footer: {
-            text: 'BuildReign Gaming Support System'
+            text: '🎮 BuildReign Gaming Support System | Respond ASAP',
+            icon_url: 'https://via.placeholder.com/32/00ff88/1a1a2e?text=⚡'
         }
     };
+
+    // Add urgency indicator for high/critical priority
+    if (ticket.priority === 'critical' || ticket.priority === 'high') {
+        embed.fields.unshift({
+            name: '⚠️ URGENT ATTENTION REQUIRED',
+            value: `**This is a ${ticket.priority.toUpperCase()} priority ticket!**\n${ticket.priority === 'critical' ? '🚨 **IMMEDIATE RESPONSE NEEDED** 🚨' : '⏰ **Please respond within 6 hours**'}`,
+            inline: false
+        });
+    }
 
     return embed;
 }
@@ -178,7 +231,7 @@ function truncateMessage(message, maxLength) {
     if (message.length <= maxLength) {
         return message;
     }
-    return message.substring(0, maxLength - 3) + '...';
+    return message.substring(0, maxLength - 20) + '...\n\n`[Message truncated]`';
 }
 
 // Export configuration status
