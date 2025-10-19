@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Center - BuildReign Gaming</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="support.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none;">
+                        <h1>BuildReign<span class="gaming">Gaming</span></h1>
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#chairs">Gaming Chairs</a></li>
+                    <li><a href="index.html#desks">Gaming Desks</a></li>
+                    <li><a href="support.html" class="active">Support</a></li>
+                    <li><a href="portal.html">My Tickets</a></li>
+                </ul>
+                <div class="user-menu">
+                    <button class="btn btn-small" id="loginBtn">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Support Hero -->
+    <section class="support-hero">
+        <div class="container">
+            <h1>Support Center</h1>
+            <p>We're here to help! Submit a ticket and our team will get back to you within 24 hours.</p>
+        </div>
+    </section>
+
+    <!-- Main Support Content -->
+    <div class="container support-container">
+        <div class="support-layout">
+            <!-- Sidebar -->
+            <aside class="support-sidebar">
+                <div class="sidebar-card">
+                    <h3>Quick Links</h3>
+                    <ul class="support-nav">
+                        <li><a href="#" class="active">Submit Ticket</a></li>
+                        <li><a href="portal.html">View My Tickets</a></li>
+                        <li><a href="#knowledgebase">Knowledge Base</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info">
+                        <p><strong>Email Support:</strong></p>
+                        <p>support@buildreigngaming.com</p>
+                        <p><strong>Phone:</strong></p>
+                        <p>1-800-BUILD-RG</p>
+                        <p><strong>Hours:</strong></p>
+                        <p>Mon-Fri: 9AM - 8PM EST<br>
+                        Sat-Sun: 10AM - 6PM EST</p>
+                    </div>
+                </div>
+                <div class="sidebar-card priority-info">
+                    <h4>Priority Levels</h4>
+                    <div class="priority-item">
+                        <span class="priority-badge critical">Critical</span>
+                        <p>Response within 2 hours</p>
+                    </div>
+                    <div class="priority-item">
+                        <span class="priority-badge high">High</span>
+                        <p>Response within 6 hours</p>
+                    </div>
+                    <div class="priority-item">
+                        <span class="priority-badge medium">Medium</span>
+                        <p>Response within 24 hours</p>
+                    </div>
+                    <div class="priority-item">
+                        <span class="priority-badge low">Low</span>
+                        <p>Response within 48 hours</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="support-main">
+                <!-- Login Required Message (hidden by default) -->
+                <div id="loginRequired" class="alert alert-warning" style="display: none;">
+                    <strong>Notice:</strong> You need to be logged in to submit a ticket.
+                    <button class="btn btn-small" onclick="showLoginModal()">Login Now</button>
+                </div>
+
+                <!-- Ticket Form -->
+                <div class="support-card">
+                    <div class="card-header">
+                        <h2>Submit a Support Ticket</h2>
+                        <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                    </div>
+                    <form id="ticketForm" class="ticket-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="department">Department *</label>
+                                <select id="department" name="department" required>
+                                    <option value="">Select Department</option>
+                                    <option value="sales">Sales - Product Inquiries</option>
+                                    <option value="technical">Technical Support - Product Issues</option>
+                                    <option value="shipping">Shipping & Delivery</option>
+                                    <option value="returns">Returns & Refunds</option>
+                                    <option value="warranty">Warranty Claims</option>
+                                    <option value="billing">Billing & Payments</option>
+                                    <option value="general">General Inquiry</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">Priority Level *</label>
+                                <select id="priority" name="priority" required>
+                                    <option value="low">Low - General Question</option>
+                                    <option value="medium" selected>Medium - Normal Issue</option>
+                                    <option value="high">High - Urgent Problem</option>
+                                    <option value="critical">Critical - System Down</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="orderNumber">Order Number (if applicable)</label>
+                            <input type="text" id="orderNumber" name="orderNumber" placeholder="e.g., BR-2025-12345">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" required placeholder="Brief description of your issue">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="8" required placeholder="Please provide detailed information about your issue..."></textarea>
+                            <small>Minimum 20 characters</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attachment">Attachment (optional)</label>
+                            <input type="file" id="attachment" name="attachment" accept="image/*,.pdf,.doc,.docx">
+                            <small>Max file size: 5MB. Allowed: Images, PDF, DOC</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <span class="btn-icon">📨</span>
+                                Submit Ticket
+                            </button>
+                            <button type="reset" class="btn btn-secondary">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Knowledge Base Preview -->
+                <div class="support-card" id="knowledgebase">
+                    <div class="card-header">
+                        <h2>Popular Knowledge Base Articles</h2>
+                    </div>
+                    <div class="kb-grid">
+                        <div class="kb-item">
+                            <div class="kb-icon">📦</div>
+                            <h4>Shipping & Delivery</h4>
+                            <p>Learn about shipping times and tracking your order</p>
+                        </div>
+                        <div class="kb-item">
+                            <div class="kb-icon">🔧</div>
+                            <h4>Assembly Instructions</h4>
+                            <p>Step-by-step guides for assembling your furniture</p>
+                        </div>
+                        <div class="kb-item">
+                            <div class="kb-icon">🔄</div>
+                            <h4>Returns & Exchanges</h4>
+                            <p>Our 30-day return policy explained</p>
+                        </div>
+                        <div class="kb-item">
+                            <div class="kb-icon">🛡️</div>
+                            <h4>Warranty Information</h4>
+                            <p>Understanding your 2-year warranty coverage</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Customer Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="showRegisterModal()">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content success">
+            <span class="modal-close">&times;</span>
+            <div class="success-icon">✓</div>
+            <h2>Ticket Submitted Successfully!</h2>
+            <p>Your ticket has been created.</p>
+            <p class="ticket-number">Ticket #<span id="ticketNumber"></span></p>
+            <p>We'll respond to your inquiry within the expected timeframe based on priority level.</p>
+            <div class="form-actions">
+                <a href="portal.html" class="btn btn-primary">View My Tickets</a>
+                <button class="btn btn-secondary" onclick="closeSuccessModal()">Submit Another</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>BuildReign Gaming</h3>
+                    <p>Premium gaming furniture and accessories for the ultimate gaming experience.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html#chairs">Gaming Chairs</a></li>
+                        <li><a href="index.html#desks">Gaming Desks</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="portal.html">My Tickets</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <p>Email: support@buildreigngaming.com</p>
+                    <p>Phone: 1-800-BUILD-RG</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BuildReign Gaming. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="support.js"></script>
+</body>
+</html>
