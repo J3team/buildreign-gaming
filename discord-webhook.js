@@ -9,7 +9,7 @@
 // 4. Name it "BuildReign Support"
 // 5. Copy the webhook URL and paste it below
 
-const DISCORD_WEBHOOK_URL = ''; // Paste your Discord webhook URL here
+const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1429470806416691211/jkYVVKjFC6bIW7j0FClKsk1Q4WXqx7LnBnTUKh5CX0fFMFQNjJ7hSzffJvN8FkiKApiB'; // Paste your Discord webhook URL here
 
 // ============= DISCORD FUNCTIONS =============
 
