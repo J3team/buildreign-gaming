@@ -238,7 +238,7 @@ function displayAdminTickets(tickets) {
             <td>
                 <div class="action-buttons">
                     <button class="btn-icon-only" onclick="viewAdminTicket('${ticket.id}')" title="View & Reply">👁️</button>
-                    <button class="btn-icon-only delete" onclick="deleteTicket('${ticket.id}')" title="Delete">🗑️</button>
+                    <button class="btn-icon-only delete" onclick="showDeleteModal('${ticket.id}')" title="Delete">🗑️</button>
                 </div>
             </td>
         </tr>
@@ -356,8 +356,8 @@ async function updateTicketStatus() {
     currentEditTicket.status = newStatus;
 }
 
-// Delete ticket
-function deleteTicket(ticketId) {
+// Show delete confirmation modal
+function showDeleteModal(ticketId) {
     ticketToDelete = ticketId;
     document.getElementById('deleteTicketId').textContent = ticketId;
     document.getElementById('deleteModal').style.display = 'block';
