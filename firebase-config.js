@@ -2,12 +2,12 @@
 // Replace these values with your actual Firebase project credentials
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDIa7yq_tX47T0-a9NJjnD0B4oug8j6_-g",
+    authDomain: "buildreign-gamin-f92b0.firebaseapp.com",
+    projectId: "buildreign-gamin-f92b0",
+    storageBucket: "buildreign-gamin-f92b0.firebasestorage.app",
+    messagingSenderId: "300001609889",
+    appId: "1:300001609889:web:1861a27a917b1b281708e0"
 };
 
 // Initialize Firebase
