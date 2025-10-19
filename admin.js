@@ -338,22 +338,38 @@ async function handleAdminReply(e, ticketId) {
 
 // Update ticket status
 async function updateTicketStatus() {
-    if (!currentEditTicket) return;
+    if (!currentEditTicket) {
+        alert('❌ No ticket selected');
+        return;
+    }
 
     const newStatus = document.getElementById('adminModalStatus').value;
 
-    // Update ticket status
-    await updateTicket(currentEditTicket.id, {
-        status: newStatus,
-        updatedAt: new Date().toISOString()
-    });
+    try {
+        console.log('Updating ticket status:', currentEditTicket.id, 'to', newStatus);
 
-    alert(`✅ Ticket status updated to: ${formatStatus(newStatus)}`);
+        // Update ticket status
+        const success = await updateTicket(currentEditTicket.id, {
+            status: newStatus,
+            updatedAt: new Date().toISOString()
+        });
 
-    // Refresh
-    loadAdminStats();
-    loadAdminTickets();
-    currentEditTicket.status = newStatus;
+        if (success) {
+            alert(`✅ Ticket status updated to: ${formatStatus(newStatus)}`);
+
+            // Update local reference
+            currentEditTicket.status = newStatus;
+
+            // Refresh dashboard
+            await loadAdminStats();
+            await loadAdminTickets();
+        } else {
+            alert('❌ Failed to update ticket status');
+        }
+    } catch (error) {
+        console.error('Error updating ticket status:', error);
+        alert('❌ Error updating ticket status: ' + error.message);
+    }
 }
 
 // Show delete confirmation modal
