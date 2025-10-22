@@ -3,465 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuildReign Gaming | Premium Gaming Furniture</title>
+    <title>QuickBreak - Fun Study Break Hub</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Scroll Progress Indicator -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <h1>BuildReign<span class="gaming">Gaming</span></h1>
-                </div>
-                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="active">Home</a></li>
-                    <li><a href="#chairs">Gaming Chairs</a></li>
-                    <li><a href="#desks">Gaming Desks</a></li>
-                    <li><a href="support.html">Support</a></li>
-                    <li><a href="portal.html">My Tickets</a></li>
-                </ul>
-                <div class="cart-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span class="cart-count">0</span>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h2 class="hero-title">Elevate Your Gaming Setup</h2>
-            <p class="hero-subtitle">Premium gaming chairs and desks designed for champions</p>
-            <div class="hero-buttons">
-                <a href="#chairs" class="btn btn-primary">Shop Chairs</a>
-                <a href="#desks" class="btn btn-secondary">Shop Desks</a>
-            </div>
-        </div>
-        <div class="hero-features">
-            <div class="feature">
-                <div class="feature-icon">✓</div>
-                <p>Free Shipping</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">✓</div>
-                <p>2-Year Warranty</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">✓</div>
-                <p>Easy Assembly</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gaming Chairs Section -->
-    <section id="chairs" class="products-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Gaming Chairs</h2>
-                <p>Engineered for comfort during marathon gaming sessions</p>
-            </div>
-            <div class="products-controls">
-                <div class="search-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    <input type="text" id="chairSearch" placeholder="Search chairs..." class="search-input">
-                </div>
-                <select id="chairSort" class="sort-select">
-                    <option value="default">Sort by</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
-                </select>
-            </div>
-            <div class="products-grid" id="chairsGrid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <div class="product-badge">Bestseller</div>
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Pro+Elite" alt="Pro Elite Chair">
-                    </div>
-                    <div class="product-info">
-                        <h3>BuildReign Pro Elite</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(247 reviews)</span>
-                        </div>
-                        <p class="product-desc">Premium ergonomic gaming chair with lumbar support and 4D armrests</p>
-                        <div class="product-features">
-                            <span>Ergonomic Design</span>
-                            <span>4D Armrests</span>
-                            <span>Lumbar Support</span>
-                        </div>
-                        <div class="product-price">$399.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="pro-elite">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Apex+Series" alt="Apex Series Chair">
-                    </div>
-                    <div class="product-info">
-                        <h3>BuildReign Apex Series</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-count">(189 reviews)</span>
-                        </div>
-                        <p class="product-desc">Racing-style chair with premium PU leather and adjustable backrest</p>
-                        <div class="product-features">
-                            <span>Racing Style</span>
-                            <span>PU Leather</span>
-                            <span>Reclining</span>
-                        </div>
-                        <div class="product-price">$299.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="apex-series">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <div class="product-badge new">New</div>
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Titan+X" alt="Titan X Chair">
-                    </div>
-                    <div class="product-info">
-                        <h3>BuildReign Titan X</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(312 reviews)</span>
-                        </div>
-                        <p class="product-desc">Heavy-duty chair for extended gaming with memory foam cushioning</p>
-                        <div class="product-features">
-                            <span>Heavy Duty</span>
-                            <span>Memory Foam</span>
-                            <span>Extra Wide</span>
-                        </div>
-                        <div class="product-price">$449.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="titan-x">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gaming Desks Section -->
-    <section id="desks" class="products-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Gaming Desks</h2>
-                <p>Spacious, sturdy workstations built for your ultimate battlestation</p>
-            </div>
-            <div class="products-controls">
-                <div class="search-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    <input type="text" id="deskSearch" placeholder="Search desks..." class="search-input">
-                </div>
-                <select id="deskSort" class="sort-select">
-                    <option value="default">Sort by</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
-                </select>
-            </div>
-            <div class="products-grid" id="desksGrid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <div class="product-badge">Bestseller</div>
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Command+Center" alt="Command Center Desk">
-                    </div>
-                    <div class="product-info">
-                        <h3>Command Center Pro</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(198 reviews)</span>
-                        </div>
-                        <p class="product-desc">Large L-shaped desk with RGB lighting and cable management system</p>
-                        <div class="product-features">
-                            <span>L-Shaped</span>
-                            <span>RGB Lighting</span>
-                            <span>Cable Management</span>
-                        </div>
-                        <div class="product-price">$599.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="command-center">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Battlestation+V2" alt="Battlestation V2 Desk">
-                    </div>
-                    <div class="product-info">
-                        <h3>Battlestation V2</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(276 reviews)</span>
-                        </div>
-                        <p class="product-desc">Ergonomic standing desk with electric height adjustment</p>
-                        <div class="product-features">
-                            <span>Standing Desk</span>
-                            <span>Electric Lift</span>
-                            <span>Memory Presets</span>
-                        </div>
-                        <div class="product-price">$799.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="battlestation-v2">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Compact+Elite" alt="Compact Elite Desk">
-                    </div>
-                    <div class="product-info">
-                        <h3>Compact Elite</h3>
-                        <div class="product-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-count">(143 reviews)</span>
-                        </div>
-                        <p class="product-desc">Space-efficient desk perfect for smaller setups with full features</p>
-                        <div class="product-features">
-                            <span>Compact Design</span>
-                            <span>Monitor Stand</span>
-                            <span>Cup Holder</span>
-                        </div>
-                        <div class="product-price">$349.99</div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
-                            <button class="btn-quick-view" data-product="compact-elite">Quick View</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Coming Soon Section -->
-    <section class="coming-soon">
-        <div class="container">
-            <h2>Coming Soon</h2>
-            <p class="coming-soon-subtitle">We're expanding our lineup with even more gaming gear</p>
-            <div class="coming-soon-grid">
-                <div class="coming-soon-item">
-                    <div class="coming-icon">🖱️</div>
-                    <h3>Gaming Mice</h3>
-                    <p>Precision engineered peripherals</p>
-                </div>
-                <div class="coming-soon-item">
-                    <div class="coming-icon">⌨️</div>
-                    <h3>Keyboards</h3>
-                    <p>Mechanical switches for competitive edge</p>
-                </div>
-                <div class="coming-soon-item">
-                    <div class="coming-icon">🖥️</div>
-                    <h3>Gaming PCs</h3>
-                    <p>Pre-built powerhouses</p>
-                </div>
-                <div class="coming-soon-item">
-                    <div class="coming-icon">🔧</div>
-                    <h3>PC Builder</h3>
-                    <p>Custom build your dream rig</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Shopping Cart Sidebar -->
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-sidebar-header">
-            <h3>Shopping Cart</h3>
-            <button class="close-cart" aria-label="Close cart">&times;</button>
-        </div>
-        <div class="cart-items" id="cartItems">
-            <p class="empty-cart-message">Your cart is empty</p>
-        </div>
-        <div class="promo-section">
-            <div class="promo-input-group">
-                <input type="text" class="promo-input" id="promoInput" placeholder="Promo code">
-                <button class="promo-apply-btn" id="promoApplyBtn">Apply</button>
-            </div>
-            <div id="promoMessage" class="promo-message" style="display: none;"></div>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Subtotal:</span>
-                <span id="cartSubtotal">$0.00</span>
-            </div>
-            <div class="cart-total" id="discountRow" style="display: none; font-size: 1.1rem; color: var(--secondary-color);">
-                <span>Discount:</span>
-                <span id="cartDiscount">-$0.00</span>
-            </div>
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotal">$0.00</span>
-            </div>
-            <button class="btn btn-primary checkout-btn">Checkout</button>
-        </div>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
     </div>
-    <div class="cart-overlay" id="cartOverlay"></div>
 
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-    </button>
-
-    <!-- Newsletter Popup -->
-    <div class="newsletter-modal" id="newsletterModal">
-        <div class="newsletter-content">
-            <button class="close-newsletter" aria-label="Close newsletter">&times;</button>
-            <h3>Join the BuildReign Gaming Community</h3>
-            <p>Get exclusive deals, gaming tips, and early access to new products!</p>
-            <form class="newsletter-form" id="newsletterForm">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit" class="btn btn-primary">Subscribe</button>
-            </form>
-        </div>
-    </div>
-    <div class="newsletter-overlay" id="newsletterOverlay"></div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-section">
-                    <h3>BuildReign Gaming</h3>
-                    <p>Premium gaming furniture and accessories for the ultimate gaming experience.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#chairs">Gaming Chairs</a></li>
-                        <li><a href="#desks">Gaming Desks</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Warranty</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <p>Email: support@buildreigngaming.com</p>
-                    <p>Phone: 1-800-BUILD-RG</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Twitter" class="social-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" aria-label="Discord" class="social-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" aria-label="YouTube" class="social-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" aria-label="Instagram" class="social-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>QuickBreak</h1>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 BuildReign Gaming. All rights reserved.</p>
+            <p class="tagline">Your Ultimate Study Break Companion</p>
+        </header>
+
+        <!-- Activity Grid -->
+        <div class="activities-grid">
+            <!-- Doodle Pad -->
+            <div class="activity-card" data-activity="doodle">
+                <div class="card-icon">✏️</div>
+                <h3>Doodle Pad</h3>
+                <p>Draw, sketch, and unleash creativity</p>
+                <button class="btn-activity">Let's Draw!</button>
+            </div>
+
+            <!-- Typing Speed Test -->
+            <div class="activity-card" data-activity="typing">
+                <div class="card-icon">⌨️</div>
+                <h3>Speed Type</h3>
+                <p>Test your typing speed and accuracy</p>
+                <button class="btn-activity">Start Typing!</button>
+            </div>
+
+            <!-- Random Name Picker -->
+            <div class="activity-card" data-activity="picker">
+                <div class="card-icon">🎲</div>
+                <h3>Random Picker</h3>
+                <p>Pick random names or make decisions</p>
+                <button class="btn-activity">Let's Pick!</button>
+            </div>
+
+            <!-- Quick Math Game -->
+            <div class="activity-card" data-activity="math">
+                <div class="card-icon">🧮</div>
+                <h3>Math Rush</h3>
+                <p>Quick mental math challenge</p>
+                <button class="btn-activity">Start Game!</button>
+            </div>
+
+            <!-- Memory Game -->
+            <div class="activity-card" data-activity="memory">
+                <div class="card-icon">🧠</div>
+                <h3>Memory Match</h3>
+                <p>Test your memory skills</p>
+                <button class="btn-activity">Play Now!</button>
+            </div>
+
+            <!-- Random Facts -->
+            <div class="activity-card" data-activity="facts">
+                <div class="card-icon">💡</div>
+                <h3>Random Facts</h3>
+                <p>Learn something interesting</p>
+                <button class="btn-activity">Show Me!</button>
             </div>
         </div>
-    </footer>
 
-    <!-- Quick View Modal -->
-    <div class="quick-view-modal" id="quickViewModal">
-        <div class="quick-view-overlay" onclick="closeQuickView()"></div>
-        <div class="quick-view-content">
-            <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
-            <div class="quick-view-layout">
-                <div class="quick-view-image">
-                    <img id="qvImage" src="" alt="">
-                </div>
-                <div class="quick-view-details">
-                    <h2 id="qvName"></h2>
-                    <div class="product-rating">
-                        <span class="stars" id="qvRating"></span>
-                        <span class="rating-count" id="qvReviews"></span>
-                    </div>
-                    <div class="quick-view-price" id="qvPrice"></div>
-                    <p class="quick-view-description" id="qvDescription"></p>
-                    <div class="quick-view-features" id="qvFeaturesContainer">
-                        <h4>Key Features</h4>
-                        <ul id="qvFeatures"></ul>
-                    </div>
-                    <div class="quantity-selector">
-                        <label>Quantity:</label>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                            <input type="number" class="quantity-input" id="qvQuantity" value="1" min="1" max="99" readonly>
-                            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
-                        </div>
-                    </div>
-                    <div class="quick-view-actions">
-                        <button class="btn btn-primary" style="flex: 2;" onclick="addToCartFromQuickView()">
-                            Add to Cart
-                        </button>
-                        <button class="btn-wishlist" onclick="toggleWishlist()" title="Add to Wishlist">
-                            ♥
-                        </button>
-                    </div>
-                </div>
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-value" id="totalGames">0</div>
+                <div class="stat-label">Games Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="highScore">0</div>
+                <div class="stat-label">High Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalTime">0m</div>
+                <div class="stat-label">Time Spent</div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <div class="toast-icon" id="toastIcon">✓</div>
-        <div class="toast-content">
-            <div class="toast-title" id="toastTitle">Success</div>
-            <div class="toast-message" id="toastMessage">Item added to cart</div>
+    <!-- Doodle Pad Modal -->
+    <div class="modal" id="doodleModal">
+        <div class="modal-content large">
+            <button class="modal-close" onclick="closeModal('doodleModal')">&times;</button>
+            <h2>✏️ Doodle Pad</h2>
+            <div class="doodle-controls">
+                <input type="color" id="colorPicker" value="#ff00ff">
+                <input type="range" id="brushSize" min="1" max="20" value="3">
+                <button class="btn-small" onclick="clearCanvas()">Clear</button>
+                <button class="btn-small" onclick="saveDrawing()">Save</button>
+            </div>
+            <canvas id="doodleCanvas" width="800" height="500"></canvas>
         </div>
-        <button class="toast-close" onclick="hideToast()">&times;</button>
     </div>
+
+    <!-- Typing Speed Modal -->
+    <div class="modal" id="typingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('typingModal')">&times;</button>
+            <h2>⌨️ Speed Type Challenge</h2>
+            <div class="typing-game">
+                <div id="typingText" class="typing-text"></div>
+                <textarea id="typingInput" class="typing-input" placeholder="Start typing here..." disabled></textarea>
+                <div class="typing-stats">
+                    <div class="stat"><span id="wpm">0</span> WPM</div>
+                    <div class="stat"><span id="accuracy">100</span>% Accuracy</div>
+                    <div class="stat"><span id="timer">30</span>s</div>
+                </div>
+                <button class="btn-primary" id="typingStartBtn" onclick="startTypingGame()">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Random Picker Modal -->
+    <div class="modal" id="pickerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('pickerModal')">&times;</button>
+            <h2>🎲 Random Picker</h2>
+            <div class="picker-container">
+                <textarea id="pickerInput" placeholder="Enter names (one per line)&#10;Alice&#10;Bob&#10;Charlie&#10;Diana&#10;Eve" rows="8"></textarea>
+                <div class="picker-result" id="pickerResult">
+                    <div class="picked-name">?</div>
+                </div>
+                <button class="btn-primary btn-large" onclick="pickRandom()">🎯 Pick Random!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Math Game Modal -->
+    <div class="modal" id="mathModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('mathModal')">&times;</button>
+            <h2>🧮 Math Rush</h2>
+            <div class="math-game">
+                <div class="math-score">Score: <span id="mathScore">0</span></div>
+                <div class="math-timer">Time: <span id="mathTimer">60</span>s</div>
+                <div class="math-question" id="mathQuestion">Click Start!</div>
+                <input type="number" id="mathAnswer" class="math-input" placeholder="Your answer" disabled>
+                <button class="btn-primary" id="mathStartBtn" onclick="startMathGame()">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Game Modal -->
+    <div class="modal" id="memoryModal">
+        <div class="modal-content large">
+            <button class="modal-close" onclick="closeModal('memoryModal')">&times;</button>
+            <h2>🧠 Memory Match</h2>
+            <div class="memory-stats">
+                <div>Moves: <span id="memoryMoves">0</span></div>
+                <div>Matches: <span id="memoryMatches">0/8</span></div>
+                <div>Time: <span id="memoryTimer">0</span>s</div>
+            </div>
+            <div class="memory-grid" id="memoryGrid"></div>
+            <button class="btn-primary" onclick="startMemoryGame()">New Game</button>
+        </div>
+    </div>
+
+    <!-- Random Facts Modal -->
+    <div class="modal" id="factsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('factsModal')">&times;</button>
+            <h2>💡 Random Facts</h2>
+            <div class="fact-container">
+                <div class="fact-icon">🌟</div>
+                <div class="fact-text" id="factText">Click the button to learn something new!</div>
+                <div class="fact-category" id="factCategory"></div>
+            </div>
+            <button class="btn-primary btn-large" onclick="showRandomFact()">Next Fact</button>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
 
     <script src="script.js"></script>
 </body>

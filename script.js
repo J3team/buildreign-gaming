@@ -1,649 +1,496 @@
-// Product Database
-const productData = {
-    'pro-elite': {
-        name: 'BuildReign Pro Elite',
-        price: 399.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Pro+Elite',
-        rating: '★★★★★',
-        reviews: '(247 reviews)',
-        description: 'The Pro Elite is our flagship gaming chair, engineered for professional gamers and content creators who demand the best. With premium materials, advanced ergonomics, and industry-leading adjustability, this chair delivers unmatched comfort during marathon gaming sessions.',
-        features: ['Premium ergonomic design with lumbar support', '4D adjustable armrests', 'High-density cold-cure foam padding', 'Reclining backrest up to 180 degrees', 'Heavy-duty metal frame - 350 lbs capacity', 'Smooth-rolling PU caster wheels']
-    },
-    'apex-series': {
-        name: 'BuildReign Apex Series',
-        price: 299.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Apex+Series',
-        rating: '★★★★☆',
-        reviews: '(189 reviews)',
-        description: 'Experience racing-inspired comfort with the Apex Series. Featuring premium PU leather upholstery and a sporty design, this chair brings motorsport aesthetics to your gaming setup without compromising on comfort or functionality.',
-        features: ['Racing-style bucket seat design', 'Premium PU leather upholstery', 'Adjustable reclining backrest', 'Integrated headrest and lumbar cushions', 'Sturdy 5-star base with smooth casters', '2-year manufacturer warranty']
-    },
-    'titan-x': {
-        name: 'BuildReign Titan X',
-        price: 449.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Titan+X',
-        rating: '★★★★★',
-        reviews: '(312 reviews)',
-        description: 'Built for serious gamers who need maximum support, the Titan X features an extra-wide seat, heavy-duty construction, and memory foam cushioning. Perfect for extended gaming marathons and all-day comfort.',
-        features: ['Extra-wide seat (up to 21 inches)', 'Memory foam padding throughout', 'Heavy-duty construction - 400 lbs capacity', 'Multi-functional tilt mechanism', 'Breathable fabric with cooling technology', 'Fully adjustable height and armrests']
-    },
-    'command-center': {
-        name: 'Command Center Pro',
-        price: 599.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Command+Center',
-        rating: '★★★★★',
-        reviews: '(198 reviews)',
-        description: 'Transform your gaming space with the Command Center Pro. This L-shaped gaming desk offers massive workspace, built-in RGB lighting, and comprehensive cable management to keep your battlestation organized and immersive.',
-        features: ['L-shaped design with 60+ inch total length', 'Integrated RGB LED lighting system', 'Built-in cable management channels', 'Reinforced steel frame construction', 'Smooth carbon fiber texture surface', 'Dedicated monitor stand and cup holder']
-    },
-    'battlestation-v2': {
-        name: 'Battlestation V2',
-        price: 799.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Battlestation+V2',
-        rating: '★★★★★',
-        reviews: '(276 reviews)',
-        description: 'Level up your ergonomics with the Battlestation V2 electric standing desk. Seamlessly switch between sitting and standing with programmable height presets, promoting better health and focus during long gaming or work sessions.',
-        features: ['Electric height adjustment (28" - 48")', '4 programmable memory presets', 'Dual-motor lift system for stability', 'Anti-collision technology', 'Spacious 60" x 30" desktop', 'Premium laminate surface with beveled edges']
-    },
-    'compact-elite': {
-        name: 'Compact Elite',
-        price: 349.99,
-        image: 'https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Compact+Elite',
-        rating: '★★★★☆',
-        reviews: '(143 reviews)',
-        description: 'Perfect for smaller spaces, the Compact Elite doesn\'t compromise on features. With an integrated monitor stand, cable management, and a sturdy build, this desk maximizes functionality in a space-efficient design.',
-        features: ['Space-efficient 48" x 24" surface', 'Elevated monitor stand platform', 'Built-in cable management grommets', 'Integrated cup holder and headphone hook', 'Sturdy metal frame with adjustable feet', 'Easy assembly with included tools']
+// Statistics
+let stats = {
+    totalGames: 0,
+    highScore: 0,
+    totalTime: 0
+};
+
+// Load stats from localStorage
+function loadStats() {
+    const saved = localStorage.getItem('quickbreak_stats');
+    if (saved) {
+        stats = JSON.parse(saved);
+        updateStatsDisplay();
     }
-};
+}
 
-// Shopping Cart and State
-let cart = [];
-let cartCount = 0;
-let promoCode = null;
-let discountPercent = 0;
-const validPromoCodes = {
-    'BUILDREIGN10': 10,
-    'GAMER20': 20,
-    'WELCOME15': 15
-};
-let wishlist = [];
-let currentQuickViewProduct = null;
+function saveStats() {
+    localStorage.setItem('quickbreak_stats', JSON.stringify(stats));
+    updateStatsDisplay();
+}
 
-// Wait for DOM to be fully loaded
+function updateStatsDisplay() {
+    document.getElementById('totalGames').textContent = stats.totalGames;
+    document.getElementById('highScore').textContent = stats.highScore;
+    document.getElementById('totalTime').textContent = Math.floor(stats.totalTime / 60) + 'm';
+}
+
+// Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    initializeWebsite();
+    loadStats();
+    setupActivityCards();
+    console.log('🎮 QuickBreak loaded! Have fun!');
 });
 
-function initializeWebsite() {
-    // Initialize scroll progress
-    initScrollProgress();
-
-    // Initialize Quick View buttons
-    initQuickView();
-
-    // Initialize promo code functionality
-    initPromoCode();
-
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', () => {
-            mobileMenuToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
+// Activity Cards Setup
+function setupActivityCards() {
+    const cards = document.querySelectorAll('.activity-card');
+    cards.forEach(card => {
+        card.querySelector('.btn-activity').addEventListener('click', function() {
+            const activity = card.getAttribute('data-activity');
+            openActivity(activity);
         });
+    });
+}
 
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
-        });
+function openActivity(activity) {
+    const modalId = activity + 'Modal';
+    openModal(modalId);
+}
+
+// Modal Management
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+// ===== DOODLE PAD =====
+let canvas, ctx, isDrawing = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    canvas = document.getElementById('doodleCanvas');
+    if (canvas) {
+        ctx = canvas.getContext('2d');
+        setupCanvas();
     }
+});
 
-    // Smooth Scrolling for Navigation Links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
+function setupCanvas() {
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Touch support
+    canvas.addEventListener('touchstart', handleTouch);
+    canvas.addEventListener('touchmove', handleTouch);
+    canvas.addEventListener('touchend', stopDrawing);
+}
+
+function startDrawing(e) {
+    isDrawing = true;
+    draw(e);
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    ctx.beginPath();
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const color = document.getElementById('colorPicker').value;
+    const size = document.getElementById('brushSize').value;
+
+    ctx.lineWidth = size;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = color;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+}
+
+function handleTouch(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
     });
+    canvas.dispatchEvent(mouseEvent);
+}
 
-    // Active Navigation Link on Scroll
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-menu a');
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
-    window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute('id');
-            }
-        });
+function saveDrawing() {
+    const link = document.createElement('a');
+    link.download = 'my-doodle.png';
+    link.href = canvas.toDataURL();
+    link.click();
+}
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    });
+// ===== TYPING SPEED TEST =====
+const typingTexts = [
+    "The quick brown fox jumps over the lazy dog near the riverbank.",
+    "Programming is the art of telling another human what one wants the computer to do.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "The only way to do great work is to love what you do and never stop learning.",
+    "In the middle of difficulty lies opportunity waiting to be discovered."
+];
 
-    // Shopping Cart
-    initCart();
+let typingState = {
+    text: '',
+    startTime: 0,
+    timer: 30,
+    interval: null,
+    timerInterval: null
+};
 
-    // Back to Top Button
-    const backToTopBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTopBtn.classList.add('visible');
-        } else {
-            backToTopBtn.classList.remove('visible');
+function startTypingGame() {
+    typingState.text = typingTexts[Math.floor(Math.random() * typingTexts.length)];
+    typingState.startTime = Date.now();
+    typingState.timer = 30;
+
+    document.getElementById('typingText').textContent = typingState.text;
+    document.getElementById('typingInput').value = '';
+    document.getElementById('typingInput').disabled = false;
+    document.getElementById('typingInput').focus();
+    document.getElementById('typingStartBtn').textContent = 'Restart';
+
+    const input = document.getElementById('typingInput');
+    input.addEventListener('input', updateTypingStats);
+
+    // Start timer
+    typingState.timerInterval = setInterval(() => {
+        typingState.timer--;
+        document.getElementById('timer').textContent = typingState.timer;
+
+        if (typingState.timer <= 0) {
+            endTypingGame();
         }
-    });
+    }, 1000);
 
-    if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+    stats.totalGames++;
+    saveStats();
+}
+
+function updateTypingStats() {
+    const input = document.getElementById('typingInput').value;
+    const text = typingState.text;
+
+    // Calculate WPM
+    const timeElapsed = (Date.now() - typingState.startTime) / 1000 / 60;
+    const wordsTyped = input.trim().split(/\s+/).length;
+    const wpm = Math.round(wordsTyped / timeElapsed) || 0;
+
+    // Calculate accuracy
+    let correct = 0;
+    for (let i = 0; i < Math.min(input.length, text.length); i++) {
+        if (input[i] === text[i]) correct++;
+    }
+    const accuracy = input.length > 0 ? Math.round((correct / input.length) * 100) : 100;
+
+    document.getElementById('wpm').textContent = wpm;
+    document.getElementById('accuracy').textContent = accuracy;
+
+    // Update high score
+    if (wpm > stats.highScore) {
+        stats.highScore = wpm;
+        saveStats();
+        showConfetti();
     }
 
-    // Newsletter Modal
-    const newsletterModal = document.getElementById('newsletterModal');
-    const newsletterOverlay = document.getElementById('newsletterOverlay');
-    const closeNewsletter = document.querySelector('.close-newsletter');
-    const newsletterForm = document.getElementById('newsletterForm');
-
-    let newsletterShown = false;
-
-    setTimeout(() => {
-        if (!newsletterShown && !localStorage.getItem('newsletter_subscribed')) {
-            newsletterModal.classList.add('active');
-            newsletterOverlay.classList.add('active');
-            newsletterShown = true;
-        }
-    }, 10000);
-
-    window.addEventListener('scroll', () => {
-        const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        if (scrollPercent > 50 && !newsletterShown && !localStorage.getItem('newsletter_subscribed')) {
-            newsletterModal.classList.add('active');
-            newsletterOverlay.classList.add('active');
-            newsletterShown = true;
-        }
-    });
-
-    function closeNewsletterModal() {
-        newsletterModal.classList.remove('active');
-        newsletterOverlay.classList.remove('active');
-    }
-
-    if (closeNewsletter) closeNewsletter.addEventListener('click', closeNewsletterModal);
-    if (newsletterOverlay) newsletterOverlay.addEventListener('click', closeNewsletterModal);
-
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = newsletterForm.querySelector('input').value;
-            localStorage.setItem('newsletter_subscribed', 'true');
-            showToast('Success!', 'Thanks for subscribing to BuildReign Gaming!', '✓');
-            closeNewsletterModal();
-        });
-    }
-
-    // Product Search & Sort
-    setupProductSearch('chairSearch', 'chairsGrid');
-    setupProductSearch('deskSearch', 'desksGrid');
-    setupProductSort('chairSort', 'chairsGrid');
-    setupProductSort('deskSort', 'desksGrid');
-
-    // Scroll Animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(50px)';
-        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
-        observer.observe(card);
-    });
-
-    const comingSoonItems = document.querySelectorAll('.coming-soon-item');
-    comingSoonItems.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        item.style.transition = `all 0.5s ease ${index * 0.1}s`;
-        observer.observe(item);
-    });
-
-    // Parallax hero
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        }
-    });
-
-    console.log('%c Welcome to BuildReign Gaming! ',
-        'background: linear-gradient(135deg, #00ff88 0%, #0088ff 100%); color: #0a0a0f; font-size: 20px; font-weight: bold; padding: 10px;'
-    );
-    console.log('Premium gaming furniture for champions.');
-}
-
-// Scroll Progress Indicator
-function initScrollProgress() {
-    const progressBar = document.getElementById('scrollProgress');
-    window.addEventListener('scroll', () => {
-        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (window.scrollY / windowHeight) * 100;
-        progressBar.style.width = scrolled + '%';
-    });
-}
-
-// Toast Notifications
-function showToast(title, message, icon = '✓') {
-    const toast = document.getElementById('toast');
-    const toastTitle = document.getElementById('toastTitle');
-    const toastMessage = document.getElementById('toastMessage');
-    const toastIcon = document.getElementById('toastIcon');
-
-    toastTitle.textContent = title;
-    toastMessage.textContent = message;
-    toastIcon.textContent = icon;
-
-    toast.classList.add('show');
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-function hideToast() {
-    document.getElementById('toast').classList.remove('show');
-}
-
-// Quick View Modal
-function initQuickView() {
-    const quickViewButtons = document.querySelectorAll('.btn-quick-view');
-    quickViewButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const productId = this.getAttribute('data-product');
-            openQuickView(productId);
-        });
-    });
-}
-
-function openQuickView(productId) {
-    const product = productData[productId];
-    if (!product) return;
-
-    currentQuickViewProduct = productId;
-
-    document.getElementById('qvImage').src = product.image;
-    document.getElementById('qvImage').alt = product.name;
-    document.getElementById('qvName').textContent = product.name;
-    document.getElementById('qvRating').textContent = product.rating;
-    document.getElementById('qvReviews').textContent = product.reviews;
-    document.getElementById('qvPrice').textContent = '$' + product.price.toFixed(2);
-    document.getElementById('qvDescription').textContent = product.description;
-
-    const featuresList = document.getElementById('qvFeatures');
-    featuresList.innerHTML = '';
-    product.features.forEach(feature => {
-        const li = document.createElement('li');
-        li.textContent = feature;
-        featuresList.appendChild(li);
-    });
-
-    document.getElementById('qvQuantity').value = 1;
-    document.getElementById('quickViewModal').classList.add('active');
-}
-
-function closeQuickView() {
-    document.getElementById('quickViewModal').classList.remove('active');
-    currentQuickViewProduct = null;
-}
-
-function increaseQuantity() {
-    const input = document.getElementById('qvQuantity');
-    if (input.value < 99) {
-        input.value = parseInt(input.value) + 1;
+    // Check if completed
+    if (input === text) {
+        endTypingGame(true);
     }
 }
 
-function decreaseQuantity() {
-    const input = document.getElementById('qvQuantity');
-    if (input.value > 1) {
-        input.value = parseInt(input.value) - 1;
-    }
-}
+function endTypingGame(completed = false) {
+    clearInterval(typingState.timerInterval);
+    document.getElementById('typingInput').disabled = true;
 
-function addToCartFromQuickView() {
-    if (!currentQuickViewProduct) return;
-
-    const product = productData[currentQuickViewProduct];
-    const quantity = parseInt(document.getElementById('qvQuantity').value);
-
-    for (let i = 0; i < quantity; i++) {
-        cart.push({
-            id: currentQuickViewProduct,
-            name: product.name,
-            price: product.price,
-            quantity: 1
-        });
-    }
-
-    updateCartUI();
-    closeQuickView();
-    showToast('Added to Cart!', `${quantity}x ${product.name} added to your cart`, '🛒');
-}
-
-function toggleWishlist() {
-    const btn = document.querySelector('.btn-wishlist');
-    if (btn.classList.contains('active')) {
-        btn.classList.remove('active');
-        showToast('Removed', 'Item removed from wishlist', '💔');
+    if (completed) {
+        showConfetti();
+        alert('🎉 Congratulations! You completed the text!');
     } else {
-        btn.classList.add('active');
-        showToast('Added to Wishlist!', 'Item saved to your wishlist', '❤️');
+        alert('⏰ Time\'s up! Try again to beat your score!');
     }
 }
 
-// Shopping Cart
-function initCart() {
-    const cartIcon = document.querySelector('.cart-icon');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const cartOverlay = document.getElementById('cartOverlay');
-    const closeCart = document.querySelector('.close-cart');
+// ===== RANDOM PICKER =====
+function pickRandom() {
+    const input = document.getElementById('pickerInput').value;
+    const names = input.split('\n').filter(n => n.trim().length > 0);
 
-    if (cartIcon) cartIcon.addEventListener('click', openCart);
-    if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
-    if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
+    if (names.length === 0) {
+        alert('Please enter some names first!');
+        return;
+    }
 
-    // Add to Cart buttons
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const productCard = this.closest('.product-card');
-            const productName = productCard.querySelector('h3').textContent;
-            const productPriceText = productCard.querySelector('.product-price').textContent;
-            const productPrice = parseFloat(productPriceText.replace('$', ''));
+    const resultDiv = document.querySelector('.picked-name');
+    let spinCount = 0;
+    const maxSpins = 20;
 
-            // Find product ID
-            const quickViewBtn = productCard.querySelector('.btn-quick-view');
-            const productId = quickViewBtn ? quickViewBtn.getAttribute('data-product') : null;
+    const spinInterval = setInterval(() => {
+        const randomName = names[Math.floor(Math.random() * names.length)];
+        resultDiv.textContent = randomName;
+        spinCount++;
 
-            cart.push({
-                id: productId,
-                name: productName,
-                price: productPrice,
-                quantity: 1
-            });
+        if (spinCount >= maxSpins) {
+            clearInterval(spinInterval);
+            const finalName = names[Math.floor(Math.random() * names.length)];
+            resultDiv.textContent = finalName;
+            showConfetti();
+        }
+    }, 100);
 
-            updateCartUI();
+    stats.totalGames++;
+    saveStats();
+}
 
-            // Button animation
-            this.classList.add('adding');
-            this.textContent = 'Adding...';
+// ===== MATH RUSH =====
+let mathState = {
+    score: 0,
+    timeLeft: 60,
+    currentAnswer: 0,
+    interval: null
+};
 
+function startMathGame() {
+    mathState.score = 0;
+    mathState.timeLeft = 60;
+
+    document.getElementById('mathScore').textContent = 0;
+    document.getElementById('mathTimer').textContent = 60;
+    document.getElementById('mathAnswer').value = '';
+    document.getElementById('mathAnswer').disabled = false;
+    document.getElementById('mathAnswer').focus();
+    document.getElementById('mathStartBtn').style.display = 'none';
+
+    generateMathQuestion();
+
+    // Setup answer input
+    const input = document.getElementById('mathAnswer');
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkMathAnswer();
+        }
+    });
+
+    // Start timer
+    mathState.interval = setInterval(() => {
+        mathState.timeLeft--;
+        document.getElementById('mathTimer').textContent = mathState.timeLeft;
+
+        if (mathState.timeLeft <= 0) {
+            endMathGame();
+        }
+    }, 1000);
+
+    stats.totalGames++;
+    saveStats();
+}
+
+function generateMathQuestion() {
+    const operations = ['+', '-', '×'];
+    const op = operations[Math.floor(Math.random() * operations.length)];
+    const num1 = Math.floor(Math.random() * 20) + 1;
+    const num2 = Math.floor(Math.random() * 20) + 1;
+
+    let answer;
+    let question;
+
+    if (op === '+') {
+        answer = num1 + num2;
+        question = `${num1} + ${num2}`;
+    } else if (op === '-') {
+        answer = num1 - num2;
+        question = `${num1} - ${num2}`;
+    } else {
+        answer = num1 * num2;
+        question = `${num1} × ${num2}`;
+    }
+
+    mathState.currentAnswer = answer;
+    document.getElementById('mathQuestion').textContent = question + ' = ?';
+}
+
+function checkMathAnswer() {
+    const userAnswer = parseInt(document.getElementById('mathAnswer').value);
+
+    if (userAnswer === mathState.currentAnswer) {
+        mathState.score++;
+        document.getElementById('mathScore').textContent = mathState.score;
+        document.getElementById('mathAnswer').value = '';
+        generateMathQuestion();
+
+        // Visual feedback
+        const questionDiv = document.getElementById('mathQuestion');
+        questionDiv.style.color = '#4facfe';
+        setTimeout(() => {
+            questionDiv.style.color = '#667eea';
+        }, 200);
+
+        if (mathState.score > stats.highScore) {
+            stats.highScore = mathState.score;
+            saveStats();
+        }
+    } else {
+        document.getElementById('mathAnswer').value = '';
+        const questionDiv = document.getElementById('mathQuestion');
+        questionDiv.style.color = '#fa709a';
+        setTimeout(() => {
+            questionDiv.style.color = '#667eea';
+        }, 200);
+    }
+}
+
+function endMathGame() {
+    clearInterval(mathState.interval);
+    document.getElementById('mathAnswer').disabled = true;
+    document.getElementById('mathStartBtn').style.display = 'block';
+    document.getElementById('mathQuestion').textContent = `Game Over! Score: ${mathState.score}`;
+
+    if (mathState.score >= 10) {
+        showConfetti();
+    }
+}
+
+// ===== MEMORY MATCH =====
+const memoryEmojis = ['🎮', '🎯', '🎲', '🎨', '🎭', '🎪', '🎸', '🎺'];
+let memoryState = {
+    cards: [],
+    flipped: [],
+    matched: 0,
+    moves: 0,
+    startTime: 0,
+    timerInterval: null
+};
+
+function startMemoryGame() {
+    memoryState.cards = [...memoryEmojis, ...memoryEmojis].sort(() => Math.random() - 0.5);
+    memoryState.flipped = [];
+    memoryState.matched = 0;
+    memoryState.moves = 0;
+    memoryState.startTime = Date.now();
+
+    const grid = document.getElementById('memoryGrid');
+    grid.innerHTML = '';
+
+    memoryState.cards.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.innerHTML = `<div class="card-front">${emoji}</div>`;
+        card.addEventListener('click', () => flipMemoryCard(index, card, emoji));
+        grid.appendChild(card);
+    });
+
+    document.getElementById('memoryMoves').textContent = 0;
+    document.getElementById('memoryMatches').textContent = '0/8';
+    document.getElementById('memoryTimer').textContent = 0;
+
+    // Start timer
+    memoryState.timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - memoryState.startTime) / 1000);
+        document.getElementById('memoryTimer').textContent = elapsed;
+    }, 1000);
+
+    stats.totalGames++;
+    saveStats();
+}
+
+function flipMemoryCard(index, cardElement, emoji) {
+    if (memoryState.flipped.length >= 2 || cardElement.classList.contains('flipped') || cardElement.classList.contains('matched')) {
+        return;
+    }
+
+    cardElement.classList.add('flipped');
+    memoryState.flipped.push({ index, element: cardElement, emoji });
+
+    if (memoryState.flipped.length === 2) {
+        memoryState.moves++;
+        document.getElementById('memoryMoves').textContent = memoryState.moves;
+
+        setTimeout(checkMemoryMatch, 800);
+    }
+}
+
+function checkMemoryMatch() {
+    const [card1, card2] = memoryState.flipped;
+
+    if (card1.emoji === card2.emoji) {
+        card1.element.classList.add('matched');
+        card2.element.classList.add('matched');
+        memoryState.matched++;
+        document.getElementById('memoryMatches').textContent = `${memoryState.matched}/8`;
+
+        if (memoryState.matched === 8) {
+            clearInterval(memoryState.timerInterval);
             setTimeout(() => {
-                this.classList.remove('adding');
-                this.classList.add('added');
-                this.textContent = 'Added!';
-
-                setTimeout(() => {
-                    this.classList.remove('added');
-                    this.textContent = 'Add to Cart';
-                }, 1000);
+                showConfetti();
+                alert(`🎉 You won! Moves: ${memoryState.moves}, Time: ${document.getElementById('memoryTimer').textContent}s`);
             }, 500);
-
-            // Cart icon animation
-            if (cartIcon) {
-                cartIcon.style.transform = 'scale(1.3)';
-                setTimeout(() => {
-                    cartIcon.style.transform = 'scale(1)';
-                }, 300);
-            }
-
-            showToast('Added to Cart!', `${productName} added to your cart`, '🛒');
-
-            setTimeout(() => {
-                openCart();
-            }, 800);
-        });
-    });
-
-    updateCartUI();
-}
-
-function updateCartUI() {
-    const cartItemsContainer = document.getElementById('cartItems');
-    const cartCountElement = document.querySelector('.cart-count');
-    const cartSubtotal = document.getElementById('cartSubtotal');
-    const cartTotal = document.getElementById('cartTotal');
-    const cartDiscount = document.getElementById('cartDiscount');
-    const discountRow = document.getElementById('discountRow');
-
-    // Merge cart items by id
-    const mergedCart = {};
-    cart.forEach(item => {
-        if (mergedCart[item.id]) {
-            mergedCart[item.id].quantity++;
-        } else {
-            mergedCart[item.id] = { ...item };
         }
-    });
-
-    const uniqueItems = Object.values(mergedCart);
-    cartCount = uniqueItems.length;
-    cartCountElement.textContent = cart.length;
-
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart-message">Your cart is empty</p>';
-        cartSubtotal.textContent = '$0.00';
-        cartTotal.textContent = '$0.00';
-        discountRow.style.display = 'none';
     } else {
-        let subtotal = 0;
-        cartItemsContainer.innerHTML = '';
+        card1.element.classList.remove('flipped');
+        card2.element.classList.remove('flipped');
+    }
 
-        uniqueItems.forEach((item, index) => {
-            const itemTotal = item.price * item.quantity;
-            subtotal += itemTotal;
+    memoryState.flipped = [];
+}
 
-            const cartItem = document.createElement('div');
-            cartItem.className = 'cart-item';
-            cartItem.innerHTML = `
-                <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
-                    <div class="cart-item-quantity">
-                        <button class="cart-quantity-btn" onclick="decreaseCartQuantity('${item.id}')">-</button>
-                        <span class="cart-quantity-display">${item.quantity}</span>
-                        <button class="cart-quantity-btn" onclick="increaseCartQuantity('${item.id}')">+</button>
-                    </div>
-                </div>
-                <button class="remove-item" onclick="removeFromCart('${item.id}')">Remove</button>
-            `;
-            cartItemsContainer.appendChild(cartItem);
-        });
+// ===== RANDOM FACTS =====
+const facts = [
+    { text: "Honey never spoils. Archaeologists have found 3000-year-old honey in Egyptian tombs that was still perfectly edible!", category: "Science" },
+    { text: "A day on Venus is longer than its year. Venus takes 243 Earth days to rotate once, but only 225 Earth days to orbit the Sun!", category: "Space" },
+    { text: "Octopuses have three hearts and blue blood. Two hearts pump blood to the gills, while the third pumps it to the rest of the body!", category: "Nature" },
+    { text: "The first computer programmer was a woman named Ada Lovelace in 1843, working on Charles Babbage's Analytical Engine.", category: "History" },
+    { text: "Bananas are berries, but strawberries aren't! In botanical terms, a berry must develop from a flower with one ovary.", category: "Science" },
+    { text: "Your brain uses about 20% of your body's energy, despite being only 2% of your body weight!", category: "Human Body" },
+    { text: "The Great Wall of China is not visible from space with the naked eye, despite popular belief!", category: "Geography" },
+    { text: "A group of flamingos is called a 'flamboyance'. How fitting!", category: "Animals" },
+    { text: "The shortest war in history lasted only 38-45 minutes between Britain and Zanzibar in 1896.", category: "History" },
+    { text: "Sharks have been around longer than trees. Sharks existed about 400 million years ago, while trees appeared around 350 million years ago.", category: "Nature" },
+    { text: "The word 'computer' was originally a job title for humans who performed calculations before electronic computers!", category: "Technology" },
+    { text: "Lightning strikes Earth about 100 times every second, or roughly 8 million times per day!", category: "Weather" },
+    { text: "Cows have best friends and get stressed when they're separated from them.", category: "Animals" },
+    { text: "The fingerprints of koalas are so similar to humans that they could potentially contaminate crime scenes!", category: "Animals" },
+    { text: "There are more possible game combinations in chess than atoms in the observable universe!", category: "Math" }
+];
 
-        const discount = subtotal * (discountPercent / 100);
-        const total = subtotal - discount;
+function showRandomFact() {
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    document.getElementById('factText').textContent = fact.text;
+    document.getElementById('factCategory').textContent = fact.category;
 
-        cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+    const icons = ['🌟', '✨', '💫', '🎯', '🎪', '🎨', '🎭', '🎸'];
+    document.querySelector('.fact-icon').textContent = icons[Math.floor(Math.random() * icons.length)];
+}
 
-        if (discountPercent > 0) {
-            cartDiscount.textContent = `-$${discount.toFixed(2)}`;
-            discountRow.style.display = 'flex';
-        } else {
-            discountRow.style.display = 'none';
-        }
+// ===== CONFETTI =====
+function showConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#fa709a'];
 
-        cartTotal.textContent = `$${total.toFixed(2)}`;
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        container.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 5000);
     }
 }
 
-function increaseCartQuantity(productId) {
-    const product = productData[productId];
-    cart.push({
-        id: productId,
-        name: product.name,
-        price: product.price,
-        quantity: 1
-    });
-    updateCartUI();
-}
-
-function decreaseCartQuantity(productId) {
-    const index = cart.findIndex(item => item.id === productId);
-    if (index !== -1) {
-        cart.splice(index, 1);
-        updateCartUI();
-    }
-}
-
-function removeFromCart(productId) {
-    cart = cart.filter(item => item.id !== productId);
-    updateCartUI();
-    showToast('Removed', 'Item removed from cart', '🗑️');
-}
-
-function openCart() {
-    document.getElementById('cartSidebar').classList.add('active');
-    document.getElementById('cartOverlay').classList.add('active');
-}
-
-function closeCartSidebar() {
-    document.getElementById('cartSidebar').classList.remove('active');
-    document.getElementById('cartOverlay').classList.remove('active');
-}
-
-// Promo Code
-function initPromoCode() {
-    const promoApplyBtn = document.getElementById('promoApplyBtn');
-    if (promoApplyBtn) {
-        promoApplyBtn.addEventListener('click', applyPromoCode);
-    }
-
-    const promoInput = document.getElementById('promoInput');
-    if (promoInput) {
-        promoInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                applyPromoCode();
-            }
-        });
-    }
-}
-
-function applyPromoCode() {
-    const promoInput = document.getElementById('promoInput');
-    const promoMessage = document.getElementById('promoMessage');
-    const code = promoInput.value.trim().toUpperCase();
-
-    if (validPromoCodes[code]) {
-        promoCode = code;
-        discountPercent = validPromoCodes[code];
-        promoMessage.textContent = `✓ Promo code applied! ${discountPercent}% discount`;
-        promoMessage.className = 'promo-message success';
-        promoMessage.style.display = 'block';
-        promoInput.disabled = true;
-        updateCartUI();
-        showToast('Promo Applied!', `${discountPercent}% discount activated`, '🎉');
-    } else {
-        promoMessage.textContent = '✗ Invalid promo code';
-        promoMessage.className = 'promo-message error';
-        promoMessage.style.display = 'block';
-    }
-}
-
-// Product Search
-function setupProductSearch(searchInputId, gridId) {
-    const searchInput = document.getElementById(searchInputId);
-    const grid = document.getElementById(gridId);
-
-    if (searchInput && grid) {
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const products = grid.querySelectorAll('.product-card');
-
-            products.forEach(product => {
-                const productName = product.querySelector('h3').textContent.toLowerCase();
-                const productDesc = product.querySelector('.product-desc').textContent.toLowerCase();
-
-                if (productName.includes(searchTerm) || productDesc.includes(searchTerm)) {
-                    product.style.display = '';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        });
-    }
-}
-
-// Product Sort
-function setupProductSort(sortSelectId, gridId) {
-    const sortSelect = document.getElementById(sortSelectId);
-    const grid = document.getElementById(gridId);
-
-    if (sortSelect && grid) {
-        sortSelect.addEventListener('change', (e) => {
-            const sortValue = e.target.value;
-            const products = Array.from(grid.querySelectorAll('.product-card'));
-
-            products.sort((a, b) => {
-                const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('$', ''));
-                const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('$', ''));
-                const ratingA = a.querySelector('.stars').textContent.match(/★/g)?.length || 0;
-                const ratingB = b.querySelector('.stars').textContent.match(/★/g)?.length || 0;
-
-                switch(sortValue) {
-                    case 'price-low':
-                        return priceA - priceB;
-                    case 'price-high':
-                        return priceB - priceA;
-                    case 'rating':
-                        return ratingB - ratingA;
-                    default:
-                        return 0;
-                }
-            });
-
-            products.forEach(product => grid.appendChild(product));
-        });
-    }
-}
-
-// Run initialization
-if (document.readyState === 'loading') {
-    // Document is still loading
-} else {
-    // DOM is already ready
-    initializeWebsite();
-}
+// Track time spent
+let sessionStart = Date.now();
+setInterval(() => {
+    stats.totalTime += 10;
+    saveStats();
+}, 10000);
