@@ -1,6 +1,73 @@
-// Shopping Cart
+// Product Database
+const productData = {
+    'pro-elite': {
+        name: 'BuildReign Pro Elite',
+        price: 399.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Pro+Elite',
+        rating: '★★★★★',
+        reviews: '(247 reviews)',
+        description: 'The Pro Elite is our flagship gaming chair, engineered for professional gamers and content creators who demand the best. With premium materials, advanced ergonomics, and industry-leading adjustability, this chair delivers unmatched comfort during marathon gaming sessions.',
+        features: ['Premium ergonomic design with lumbar support', '4D adjustable armrests', 'High-density cold-cure foam padding', 'Reclining backrest up to 180 degrees', 'Heavy-duty metal frame - 350 lbs capacity', 'Smooth-rolling PU caster wheels']
+    },
+    'apex-series': {
+        name: 'BuildReign Apex Series',
+        price: 299.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Apex+Series',
+        rating: '★★★★☆',
+        reviews: '(189 reviews)',
+        description: 'Experience racing-inspired comfort with the Apex Series. Featuring premium PU leather upholstery and a sporty design, this chair brings motorsport aesthetics to your gaming setup without compromising on comfort or functionality.',
+        features: ['Racing-style bucket seat design', 'Premium PU leather upholstery', 'Adjustable reclining backrest', 'Integrated headrest and lumbar cushions', 'Sturdy 5-star base with smooth casters', '2-year manufacturer warranty']
+    },
+    'titan-x': {
+        name: 'BuildReign Titan X',
+        price: 449.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Titan+X',
+        rating: '★★★★★',
+        reviews: '(312 reviews)',
+        description: 'Built for serious gamers who need maximum support, the Titan X features an extra-wide seat, heavy-duty construction, and memory foam cushioning. Perfect for extended gaming marathons and all-day comfort.',
+        features: ['Extra-wide seat (up to 21 inches)', 'Memory foam padding throughout', 'Heavy-duty construction - 400 lbs capacity', 'Multi-functional tilt mechanism', 'Breathable fabric with cooling technology', 'Fully adjustable height and armrests']
+    },
+    'command-center': {
+        name: 'Command Center Pro',
+        price: 599.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/00ff88?text=Command+Center',
+        rating: '★★★★★',
+        reviews: '(198 reviews)',
+        description: 'Transform your gaming space with the Command Center Pro. This L-shaped gaming desk offers massive workspace, built-in RGB lighting, and comprehensive cable management to keep your battlestation organized and immersive.',
+        features: ['L-shaped design with 60+ inch total length', 'Integrated RGB LED lighting system', 'Built-in cable management channels', 'Reinforced steel frame construction', 'Smooth carbon fiber texture surface', 'Dedicated monitor stand and cup holder']
+    },
+    'battlestation-v2': {
+        name: 'Battlestation V2',
+        price: 799.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/ff0088?text=Battlestation+V2',
+        rating: '★★★★★',
+        reviews: '(276 reviews)',
+        description: 'Level up your ergonomics with the Battlestation V2 electric standing desk. Seamlessly switch between sitting and standing with programmable height presets, promoting better health and focus during long gaming or work sessions.',
+        features: ['Electric height adjustment (28" - 48")', '4 programmable memory presets', 'Dual-motor lift system for stability', 'Anti-collision technology', 'Spacious 60" x 30" desktop', 'Premium laminate surface with beveled edges']
+    },
+    'compact-elite': {
+        name: 'Compact Elite',
+        price: 349.99,
+        image: 'https://via.placeholder.com/300x300/1a1a2e/0088ff?text=Compact+Elite',
+        rating: '★★★★☆',
+        reviews: '(143 reviews)',
+        description: 'Perfect for smaller spaces, the Compact Elite doesn\'t compromise on features. With an integrated monitor stand, cable management, and a sturdy build, this desk maximizes functionality in a space-efficient design.',
+        features: ['Space-efficient 48" x 24" surface', 'Elevated monitor stand platform', 'Built-in cable management grommets', 'Integrated cup holder and headphone hook', 'Sturdy metal frame with adjustable feet', 'Easy assembly with included tools']
+    }
+};
+
+// Shopping Cart and State
 let cart = [];
 let cartCount = 0;
+let promoCode = null;
+let discountPercent = 0;
+const validPromoCodes = {
+    'BUILDREIGN10': 10,
+    'GAMER20': 20,
+    'WELCOME15': 15
+};
+let wishlist = [];
+let currentQuickViewProduct = null;
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -8,6 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeWebsite() {
+    // Initialize scroll progress
+    initScrollProgress();
+
+    // Initialize Quick View buttons
+    initQuickView();
+
+    // Initialize promo code functionality
+    initPromoCode();
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -18,7 +94,6 @@ function initializeWebsite() {
             navMenu.classList.toggle('active');
         });
 
-        // Close mobile menu when clicking on a link
         navMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenuToggle.classList.remove('active');
@@ -47,7 +122,6 @@ function initializeWebsite() {
 
     window.addEventListener('scroll', () => {
         let current = '';
-
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
@@ -64,122 +138,11 @@ function initializeWebsite() {
         });
     });
 
-    // Shopping Cart Sidebar Elements
-    const cartIcon = document.querySelector('.cart-icon');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const cartOverlay = document.getElementById('cartOverlay');
-    const closeCart = document.querySelector('.close-cart');
-    const cartItemsContainer = document.getElementById('cartItems');
-    const cartTotalElement = document.getElementById('cartTotal');
-    const cartCountElement = document.querySelector('.cart-count');
-
-    // Cart Functions
-    function updateCartUI() {
-        // Update cart count
-        cartCount = cart.length;
-        cartCountElement.textContent = cartCount;
-
-        // Update cart items display
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<p class="empty-cart-message">Your cart is empty</p>';
-            cartTotalElement.textContent = '$0.00';
-        } else {
-            let total = 0;
-            cartItemsContainer.innerHTML = '';
-
-            cart.forEach((item, index) => {
-                const price = parseFloat(item.price.replace('$', ''));
-                total += price;
-
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.innerHTML = `
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <div class="cart-item-price">${item.price}</div>
-                    </div>
-                    <button class="remove-item" data-index="${index}">Remove</button>
-                `;
-                cartItemsContainer.appendChild(cartItem);
-            });
-
-            cartTotalElement.textContent = `$${total.toFixed(2)}`;
-
-            // Add remove item functionality
-            document.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    cart.splice(index, 1);
-                    updateCartUI();
-                });
-            });
-        }
-    }
-
-    function openCart() {
-        cartSidebar.classList.add('active');
-        cartOverlay.classList.add('active');
-    }
-
-    function closeCartSidebar() {
-        cartSidebar.classList.remove('active');
-        cartOverlay.classList.remove('active');
-    }
-
-    // Cart Icon Click Event
-    if (cartIcon) cartIcon.addEventListener('click', openCart);
-    if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
-    if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
-
-    // Add to Cart Functionality
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    console.log('Found', addToCartButtons.length, 'add to cart buttons');
-
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            console.log('Add to cart clicked!');
-            const productCard = this.closest('.product-card');
-            const productName = productCard.querySelector('h3').textContent;
-            const productPrice = productCard.querySelector('.product-price').textContent;
-
-            // Add to cart array
-            cart.push({
-                name: productName,
-                price: productPrice
-            });
-
-            // Update cart UI
-            updateCartUI();
-
-            // Button feedback animation
-            this.textContent = 'Added!';
-            this.style.background = 'linear-gradient(135deg, #ff0088 0%, #00ff88 100%)';
-
-            setTimeout(() => {
-                this.textContent = 'Add to Cart';
-                this.style.background = 'linear-gradient(135deg, #00ff88 0%, #0088ff 100%)';
-            }, 1000);
-
-            // Animate cart icon
-            if (cartIcon) {
-                cartIcon.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    cartIcon.style.transform = 'scale(1)';
-                }, 300);
-            }
-
-            console.log('Cart:', cart);
-
-            // Show the cart sidebar briefly
-            setTimeout(() => {
-                openCart();
-            }, 500);
-        });
-    });
+    // Shopping Cart
+    initCart();
 
     // Back to Top Button
     const backToTopBtn = document.getElementById('backToTop');
-
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 300) {
             backToTopBtn.classList.add('visible');
@@ -203,7 +166,6 @@ function initializeWebsite() {
     const closeNewsletter = document.querySelector('.close-newsletter');
     const newsletterForm = document.getElementById('newsletterForm');
 
-    // Show newsletter after 10 seconds or after scrolling 50%
     let newsletterShown = false;
 
     setTimeout(() => {
@@ -235,78 +197,19 @@ function initializeWebsite() {
         newsletterForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = newsletterForm.querySelector('input').value;
-            console.log('Newsletter subscription:', email);
             localStorage.setItem('newsletter_subscribed', 'true');
-            alert('Thank you for subscribing to BuildReign Gaming newsletter!');
+            showToast('Success!', 'Thanks for subscribing to BuildReign Gaming!', '✓');
             closeNewsletterModal();
         });
     }
 
-    // Product Search Functionality
-    function setupProductSearch(searchInputId, gridId) {
-        const searchInput = document.getElementById(searchInputId);
-        const grid = document.getElementById(gridId);
-
-        if (searchInput && grid) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const products = grid.querySelectorAll('.product-card');
-
-                products.forEach(product => {
-                    const productName = product.querySelector('h3').textContent.toLowerCase();
-                    const productDesc = product.querySelector('.product-desc').textContent.toLowerCase();
-
-                    if (productName.includes(searchTerm) || productDesc.includes(searchTerm)) {
-                        product.style.display = '';
-                    } else {
-                        product.style.display = 'none';
-                    }
-                });
-            });
-        }
-    }
-
-    // Product Sort Functionality
-    function setupProductSort(sortSelectId, gridId) {
-        const sortSelect = document.getElementById(sortSelectId);
-        const grid = document.getElementById(gridId);
-
-        if (sortSelect && grid) {
-            sortSelect.addEventListener('change', (e) => {
-                const sortValue = e.target.value;
-                const products = Array.from(grid.querySelectorAll('.product-card'));
-
-                products.sort((a, b) => {
-                    const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('$', ''));
-                    const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('$', ''));
-                    const ratingA = a.querySelector('.stars').textContent.match(/★/g)?.length || 0;
-                    const ratingB = b.querySelector('.stars').textContent.match(/★/g)?.length || 0;
-
-                    switch(sortValue) {
-                        case 'price-low':
-                            return priceA - priceB;
-                        case 'price-high':
-                            return priceB - priceA;
-                        case 'rating':
-                            return ratingB - ratingA;
-                        default:
-                            return 0;
-                    }
-                });
-
-                // Re-append sorted products
-                products.forEach(product => grid.appendChild(product));
-            });
-        }
-    }
-
-    // Initialize search and sort for both sections
+    // Product Search & Sort
     setupProductSearch('chairSearch', 'chairsGrid');
     setupProductSearch('deskSearch', 'desksGrid');
     setupProductSort('chairSort', 'chairsGrid');
     setupProductSort('deskSort', 'desksGrid');
 
-    // Intersection Observer for Scroll Animations
+    // Scroll Animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -321,7 +224,6 @@ function initializeWebsite() {
         });
     }, observerOptions);
 
-    // Observe product cards for scroll animations
     const productCards = document.querySelectorAll('.product-card');
     productCards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -330,7 +232,6 @@ function initializeWebsite() {
         observer.observe(card);
     });
 
-    // Observe coming soon items
     const comingSoonItems = document.querySelectorAll('.coming-soon-item');
     comingSoonItems.forEach((item, index) => {
         item.style.opacity = '0';
@@ -339,7 +240,7 @@ function initializeWebsite() {
         observer.observe(item);
     });
 
-    // Add parallax effect to hero section
+    // Parallax hero
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
         const hero = document.querySelector('.hero');
@@ -348,17 +249,401 @@ function initializeWebsite() {
         }
     });
 
-    // Log welcome message
     console.log('%c Welcome to BuildReign Gaming! ',
         'background: linear-gradient(135deg, #00ff88 0%, #0088ff 100%); color: #0a0a0f; font-size: 20px; font-weight: bold; padding: 10px;'
     );
     console.log('Premium gaming furniture for champions.');
 }
 
-// Also run initialization if DOM is already loaded (for hot reloading)
+// Scroll Progress Indicator
+function initScrollProgress() {
+    const progressBar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (window.scrollY / windowHeight) * 100;
+        progressBar.style.width = scrolled + '%';
+    });
+}
+
+// Toast Notifications
+function showToast(title, message, icon = '✓') {
+    const toast = document.getElementById('toast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    toastIcon.textContent = icon;
+
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function hideToast() {
+    document.getElementById('toast').classList.remove('show');
+}
+
+// Quick View Modal
+function initQuickView() {
+    const quickViewButtons = document.querySelectorAll('.btn-quick-view');
+    quickViewButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const productId = this.getAttribute('data-product');
+            openQuickView(productId);
+        });
+    });
+}
+
+function openQuickView(productId) {
+    const product = productData[productId];
+    if (!product) return;
+
+    currentQuickViewProduct = productId;
+
+    document.getElementById('qvImage').src = product.image;
+    document.getElementById('qvImage').alt = product.name;
+    document.getElementById('qvName').textContent = product.name;
+    document.getElementById('qvRating').textContent = product.rating;
+    document.getElementById('qvReviews').textContent = product.reviews;
+    document.getElementById('qvPrice').textContent = '$' + product.price.toFixed(2);
+    document.getElementById('qvDescription').textContent = product.description;
+
+    const featuresList = document.getElementById('qvFeatures');
+    featuresList.innerHTML = '';
+    product.features.forEach(feature => {
+        const li = document.createElement('li');
+        li.textContent = feature;
+        featuresList.appendChild(li);
+    });
+
+    document.getElementById('qvQuantity').value = 1;
+    document.getElementById('quickViewModal').classList.add('active');
+}
+
+function closeQuickView() {
+    document.getElementById('quickViewModal').classList.remove('active');
+    currentQuickViewProduct = null;
+}
+
+function increaseQuantity() {
+    const input = document.getElementById('qvQuantity');
+    if (input.value < 99) {
+        input.value = parseInt(input.value) + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const input = document.getElementById('qvQuantity');
+    if (input.value > 1) {
+        input.value = parseInt(input.value) - 1;
+    }
+}
+
+function addToCartFromQuickView() {
+    if (!currentQuickViewProduct) return;
+
+    const product = productData[currentQuickViewProduct];
+    const quantity = parseInt(document.getElementById('qvQuantity').value);
+
+    for (let i = 0; i < quantity; i++) {
+        cart.push({
+            id: currentQuickViewProduct,
+            name: product.name,
+            price: product.price,
+            quantity: 1
+        });
+    }
+
+    updateCartUI();
+    closeQuickView();
+    showToast('Added to Cart!', `${quantity}x ${product.name} added to your cart`, '🛒');
+}
+
+function toggleWishlist() {
+    const btn = document.querySelector('.btn-wishlist');
+    if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+        showToast('Removed', 'Item removed from wishlist', '💔');
+    } else {
+        btn.classList.add('active');
+        showToast('Added to Wishlist!', 'Item saved to your wishlist', '❤️');
+    }
+}
+
+// Shopping Cart
+function initCart() {
+    const cartIcon = document.querySelector('.cart-icon');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const closeCart = document.querySelector('.close-cart');
+
+    if (cartIcon) cartIcon.addEventListener('click', openCart);
+    if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
+    if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
+
+    // Add to Cart buttons
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productCard = this.closest('.product-card');
+            const productName = productCard.querySelector('h3').textContent;
+            const productPriceText = productCard.querySelector('.product-price').textContent;
+            const productPrice = parseFloat(productPriceText.replace('$', ''));
+
+            // Find product ID
+            const quickViewBtn = productCard.querySelector('.btn-quick-view');
+            const productId = quickViewBtn ? quickViewBtn.getAttribute('data-product') : null;
+
+            cart.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                quantity: 1
+            });
+
+            updateCartUI();
+
+            // Button animation
+            this.classList.add('adding');
+            this.textContent = 'Adding...';
+
+            setTimeout(() => {
+                this.classList.remove('adding');
+                this.classList.add('added');
+                this.textContent = 'Added!';
+
+                setTimeout(() => {
+                    this.classList.remove('added');
+                    this.textContent = 'Add to Cart';
+                }, 1000);
+            }, 500);
+
+            // Cart icon animation
+            if (cartIcon) {
+                cartIcon.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    cartIcon.style.transform = 'scale(1)';
+                }, 300);
+            }
+
+            showToast('Added to Cart!', `${productName} added to your cart`, '🛒');
+
+            setTimeout(() => {
+                openCart();
+            }, 800);
+        });
+    });
+
+    updateCartUI();
+}
+
+function updateCartUI() {
+    const cartItemsContainer = document.getElementById('cartItems');
+    const cartCountElement = document.querySelector('.cart-count');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartDiscount = document.getElementById('cartDiscount');
+    const discountRow = document.getElementById('discountRow');
+
+    // Merge cart items by id
+    const mergedCart = {};
+    cart.forEach(item => {
+        if (mergedCart[item.id]) {
+            mergedCart[item.id].quantity++;
+        } else {
+            mergedCart[item.id] = { ...item };
+        }
+    });
+
+    const uniqueItems = Object.values(mergedCart);
+    cartCount = uniqueItems.length;
+    cartCountElement.textContent = cart.length;
+
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="empty-cart-message">Your cart is empty</p>';
+        cartSubtotal.textContent = '$0.00';
+        cartTotal.textContent = '$0.00';
+        discountRow.style.display = 'none';
+    } else {
+        let subtotal = 0;
+        cartItemsContainer.innerHTML = '';
+
+        uniqueItems.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+                    <div class="cart-item-quantity">
+                        <button class="cart-quantity-btn" onclick="decreaseCartQuantity('${item.id}')">-</button>
+                        <span class="cart-quantity-display">${item.quantity}</span>
+                        <button class="cart-quantity-btn" onclick="increaseCartQuantity('${item.id}')">+</button>
+                    </div>
+                </div>
+                <button class="remove-item" onclick="removeFromCart('${item.id}')">Remove</button>
+            `;
+            cartItemsContainer.appendChild(cartItem);
+        });
+
+        const discount = subtotal * (discountPercent / 100);
+        const total = subtotal - discount;
+
+        cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+
+        if (discountPercent > 0) {
+            cartDiscount.textContent = `-$${discount.toFixed(2)}`;
+            discountRow.style.display = 'flex';
+        } else {
+            discountRow.style.display = 'none';
+        }
+
+        cartTotal.textContent = `$${total.toFixed(2)}`;
+    }
+}
+
+function increaseCartQuantity(productId) {
+    const product = productData[productId];
+    cart.push({
+        id: productId,
+        name: product.name,
+        price: product.price,
+        quantity: 1
+    });
+    updateCartUI();
+}
+
+function decreaseCartQuantity(productId) {
+    const index = cart.findIndex(item => item.id === productId);
+    if (index !== -1) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCartUI();
+    showToast('Removed', 'Item removed from cart', '🗑️');
+}
+
+function openCart() {
+    document.getElementById('cartSidebar').classList.add('active');
+    document.getElementById('cartOverlay').classList.add('active');
+}
+
+function closeCartSidebar() {
+    document.getElementById('cartSidebar').classList.remove('active');
+    document.getElementById('cartOverlay').classList.remove('active');
+}
+
+// Promo Code
+function initPromoCode() {
+    const promoApplyBtn = document.getElementById('promoApplyBtn');
+    if (promoApplyBtn) {
+        promoApplyBtn.addEventListener('click', applyPromoCode);
+    }
+
+    const promoInput = document.getElementById('promoInput');
+    if (promoInput) {
+        promoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                applyPromoCode();
+            }
+        });
+    }
+}
+
+function applyPromoCode() {
+    const promoInput = document.getElementById('promoInput');
+    const promoMessage = document.getElementById('promoMessage');
+    const code = promoInput.value.trim().toUpperCase();
+
+    if (validPromoCodes[code]) {
+        promoCode = code;
+        discountPercent = validPromoCodes[code];
+        promoMessage.textContent = `✓ Promo code applied! ${discountPercent}% discount`;
+        promoMessage.className = 'promo-message success';
+        promoMessage.style.display = 'block';
+        promoInput.disabled = true;
+        updateCartUI();
+        showToast('Promo Applied!', `${discountPercent}% discount activated`, '🎉');
+    } else {
+        promoMessage.textContent = '✗ Invalid promo code';
+        promoMessage.className = 'promo-message error';
+        promoMessage.style.display = 'block';
+    }
+}
+
+// Product Search
+function setupProductSearch(searchInputId, gridId) {
+    const searchInput = document.getElementById(searchInputId);
+    const grid = document.getElementById(gridId);
+
+    if (searchInput && grid) {
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const products = grid.querySelectorAll('.product-card');
+
+            products.forEach(product => {
+                const productName = product.querySelector('h3').textContent.toLowerCase();
+                const productDesc = product.querySelector('.product-desc').textContent.toLowerCase();
+
+                if (productName.includes(searchTerm) || productDesc.includes(searchTerm)) {
+                    product.style.display = '';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        });
+    }
+}
+
+// Product Sort
+function setupProductSort(sortSelectId, gridId) {
+    const sortSelect = document.getElementById(sortSelectId);
+    const grid = document.getElementById(gridId);
+
+    if (sortSelect && grid) {
+        sortSelect.addEventListener('change', (e) => {
+            const sortValue = e.target.value;
+            const products = Array.from(grid.querySelectorAll('.product-card'));
+
+            products.sort((a, b) => {
+                const priceA = parseFloat(a.querySelector('.product-price').textContent.replace('$', ''));
+                const priceB = parseFloat(b.querySelector('.product-price').textContent.replace('$', ''));
+                const ratingA = a.querySelector('.stars').textContent.match(/★/g)?.length || 0;
+                const ratingB = b.querySelector('.stars').textContent.match(/★/g)?.length || 0;
+
+                switch(sortValue) {
+                    case 'price-low':
+                        return priceA - priceB;
+                    case 'price-high':
+                        return priceB - priceA;
+                    case 'rating':
+                        return ratingB - ratingA;
+                    default:
+                        return 0;
+                }
+            });
+
+            products.forEach(product => grid.appendChild(product));
+        });
+    }
+}
+
+// Run initialization
 if (document.readyState === 'loading') {
-    // Document is still loading, wait for DOMContentLoaded
+    // Document is still loading
 } else {
-    // DOM is already ready, execute immediately
+    // DOM is already ready
     initializeWebsite();
 }

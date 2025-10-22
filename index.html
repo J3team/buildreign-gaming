@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scrollProgress"></div>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
@@ -105,7 +107,10 @@
                             <span>Lumbar Support</span>
                         </div>
                         <div class="product-price">$399.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="pro-elite">Quick View</button>
+                        </div>
                     </div>
                 </div>
 
@@ -126,7 +131,10 @@
                             <span>Reclining</span>
                         </div>
                         <div class="product-price">$299.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="apex-series">Quick View</button>
+                        </div>
                     </div>
                 </div>
 
@@ -148,7 +156,10 @@
                             <span>Extra Wide</span>
                         </div>
                         <div class="product-price">$449.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="titan-x">Quick View</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,7 +207,10 @@
                             <span>Cable Management</span>
                         </div>
                         <div class="product-price">$599.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="command-center">Quick View</button>
+                        </div>
                     </div>
                 </div>
 
@@ -217,7 +231,10 @@
                             <span>Memory Presets</span>
                         </div>
                         <div class="product-price">$799.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="battlestation-v2">Quick View</button>
+                        </div>
                     </div>
                 </div>
 
@@ -238,7 +255,10 @@
                             <span>Cup Holder</span>
                         </div>
                         <div class="product-price">$349.99</div>
-                        <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                        <div class="product-actions">
+                            <button class="btn btn-primary add-to-cart" style="flex: 2;">Add to Cart</button>
+                            <button class="btn-quick-view" data-product="compact-elite">Quick View</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -284,7 +304,22 @@
         <div class="cart-items" id="cartItems">
             <p class="empty-cart-message">Your cart is empty</p>
         </div>
+        <div class="promo-section">
+            <div class="promo-input-group">
+                <input type="text" class="promo-input" id="promoInput" placeholder="Promo code">
+                <button class="promo-apply-btn" id="promoApplyBtn">Apply</button>
+            </div>
+            <div id="promoMessage" class="promo-message" style="display: none;"></div>
+        </div>
         <div class="cart-footer">
+            <div class="cart-total">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">$0.00</span>
+            </div>
+            <div class="cart-total" id="discountRow" style="display: none; font-size: 1.1rem; color: var(--secondary-color);">
+                <span>Discount:</span>
+                <span id="cartDiscount">-$0.00</span>
+            </div>
             <div class="cart-total">
                 <span>Total:</span>
                 <span id="cartTotal">$0.00</span>
@@ -375,6 +410,58 @@
             </div>
         </div>
     </footer>
+
+    <!-- Quick View Modal -->
+    <div class="quick-view-modal" id="quickViewModal">
+        <div class="quick-view-overlay" onclick="closeQuickView()"></div>
+        <div class="quick-view-content">
+            <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
+            <div class="quick-view-layout">
+                <div class="quick-view-image">
+                    <img id="qvImage" src="" alt="">
+                </div>
+                <div class="quick-view-details">
+                    <h2 id="qvName"></h2>
+                    <div class="product-rating">
+                        <span class="stars" id="qvRating"></span>
+                        <span class="rating-count" id="qvReviews"></span>
+                    </div>
+                    <div class="quick-view-price" id="qvPrice"></div>
+                    <p class="quick-view-description" id="qvDescription"></p>
+                    <div class="quick-view-features" id="qvFeaturesContainer">
+                        <h4>Key Features</h4>
+                        <ul id="qvFeatures"></ul>
+                    </div>
+                    <div class="quantity-selector">
+                        <label>Quantity:</label>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                            <input type="number" class="quantity-input" id="qvQuantity" value="1" min="1" max="99" readonly>
+                            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+                    <div class="quick-view-actions">
+                        <button class="btn btn-primary" style="flex: 2;" onclick="addToCartFromQuickView()">
+                            Add to Cart
+                        </button>
+                        <button class="btn-wishlist" onclick="toggleWishlist()" title="Add to Wishlist">
+                            ♥
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon" id="toastIcon">✓</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Success</div>
+            <div class="toast-message" id="toastMessage">Item added to cart</div>
+        </div>
+        <button class="toast-close" onclick="hideToast()">&times;</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
